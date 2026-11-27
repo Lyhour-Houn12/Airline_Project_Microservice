@@ -58,7 +58,9 @@ public class PassengerServiceImpl implements PassengerService {
         booking.getSegments().forEach(s -> fareCalculator.price(booking.link(passenger, s)));
         booking.recalculateTotal();
 
-        bookingRepository.saveAndFlush(booking);           // flush so the new id exists
+        // flush, not saveAndFlush: the booking is already managed, and save() would merge it,
+        // which saves a COPY of the new passenger and leaves this one without an id
+        bookingRepository.flush();
         return PassengerMapper.toResponse(passenger);
     }
 
@@ -91,7 +93,7 @@ public class PassengerServiceImpl implements PassengerService {
         passenger.getPassengerSegments().forEach(fareCalculator::price);
         booking.recalculateTotal();
 
-        bookingRepository.saveAndFlush(booking);
+        bookingRepository.flush();
         return PassengerMapper.toResponse(passenger);
     }
 
@@ -108,7 +110,7 @@ public class PassengerServiceImpl implements PassengerService {
                 .map(PassengerSegment::getSeatInstanceId).filter(Objects::nonNull).toList();
         booking.removePassenger(passenger);
         booking.recalculateTotal();
-        bookingRepository.saveAndFlush(booking);
+        bookingRepository.flush();
         seatInventory.releaseAfterCommit(booking, seats);
     }
 
