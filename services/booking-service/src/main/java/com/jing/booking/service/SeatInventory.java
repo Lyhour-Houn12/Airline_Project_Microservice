@@ -8,7 +8,9 @@ import com.jing.booking.service.messaging.SeatConfirmHandler;
 import com.jing.booking.service.messaging.SeatReleaseHandler;
 import com.jing.common.dto.seat.SeatHoldRequest;
 import com.jing.common.dto.seat.SeatInstanceResponse;
+import com.jing.common.dto.seat.CabinReservationRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
  *       gives a seat away, and a seat-service outage never leaves a seat stuck.</li>
  * </ul>
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SeatInventory {
@@ -38,7 +41,37 @@ public class SeatInventory {
                 booking.getExpiresAt()));
     }
 
-    /** Book every seat the booking holds (after it's paid). */
+    /**
+     * Sets this booking's places in the segment's cabin to what its passengers need. Synchronous:
+     * a full cabin must stop the change right away (409 "only N seat(s) left").
+     */
+    public void reservePlaces(Booking booking, BookingSegment segment) {
+        setPlaces(booking, segment, segment.placesNeeded());
+    }
+
+    public void reservePlacesForAll(Booking booking) {
+        booking.getSegments().forEach(s -> reservePlaces(booking, s));
+    }
+
+    /**
+     * Gives places back (passenger or flight removed). Best effort: if seat-service is down the hold
+     * lapses with the booking anyway, so this must not block the customer's change.
+     */
+    public void releasePlaces(Booking booking, BookingSegment segment, int remaining) {
+        try {
+            setPlaces(booking, segment, remaining);
+        } catch (RuntimeException e) {
+            log.warn("Could not give back places of booking {} on segment {}: {}",
+                    booking.getBookingReference(), segment.getId(), e.getMessage());
+        }
+    }
+
+    private void setPlaces(Booking booking, BookingSegment segment, int places) {
+        client.reserveCabin(new CabinReservationRequest(segment.getFlightInstanceId(), segment.getCabinClassId(),
+                booking.getBookingReference(), places, booking.getExpiresAt()));
+    }
+
+    /** Book every place and seat the booking holds (after it's paid). */
     public void confirmAfterCommit(Booking booking) {
         outbox.enqueue(SeatConfirmHandler.TYPE, booking.getId(), new SeatConfirmHandler.Payload(booking.getId()));
     }

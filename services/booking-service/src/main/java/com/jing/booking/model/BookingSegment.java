@@ -62,6 +62,14 @@ public class BookingSegment {
     @Column(length = 40) private String departureTimeZone;
     @Column(length = 40) private String arrivalTimeZone;
 
+    /** Passengers who need a place in the cabin: everyone except infants (on a lap) and cancelled ones. */
+    public int placesNeeded() {
+        return (int) passengerSegments.stream()
+                .filter(ps -> ps.getStatus() != com.jing.common.enumeration.PassengerSegmentStatus.CANCELLED)
+                .filter(ps -> ps.getPassenger().getPassengerType() != com.jing.common.enumeration.PassengerType.INFANT)
+                .count();
+    }
+
     /** Departure on the UTC clock (old segments: their local time read in the server's zone). */
     public Instant departsAt() {
         return departureAt != null ? departureAt : departureTime.atZone(ZoneId.systemDefault()).toInstant();

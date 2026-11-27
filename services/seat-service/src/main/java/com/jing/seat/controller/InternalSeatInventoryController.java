@@ -5,7 +5,11 @@ import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.dto.seat.SeatHoldRequest;
 import com.jing.common.dto.seat.SeatInstanceResponse;
 import com.jing.common.dto.seat.SeatReleaseRequest;
+import com.jing.seat.service.CabinReservationService;
 import com.jing.seat.service.SeatHoldService;
+import com.jing.common.dto.seat.CabinConfirmRequest;
+import com.jing.common.dto.seat.CabinReservationRequest;
+import com.jing.common.dto.seat.CabinReservationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +28,7 @@ import java.util.Map;
 public class InternalSeatInventoryController {
 
     private final SeatHoldService seatHoldService;
+    private final CabinReservationService cabinReservationService;
 
     @PostMapping("/{id}/hold")
     public SeatInstanceResponse hold(@PathVariable Long id, @Valid @RequestBody SeatHoldRequest request) {
@@ -38,5 +43,17 @@ public class InternalSeatInventoryController {
     @PostMapping("/release")
     public Map<String, Integer> release(@Valid @RequestBody SeatReleaseRequest request) {
         return Map.of("released", seatHoldService.release(request));
+    }
+
+    // ------------------------------------------------------------ cabin capacity (places, seat or not)
+
+    @PostMapping("/cabin-reservations")
+    public CabinReservationResponse reserve(@Valid @RequestBody CabinReservationRequest request) {
+        return cabinReservationService.reserve(request);
+    }
+
+    @PostMapping("/cabin-reservations/confirm")
+    public void confirmCabins(@Valid @RequestBody CabinConfirmRequest request) {
+        cabinReservationService.confirm(request);
     }
 }
