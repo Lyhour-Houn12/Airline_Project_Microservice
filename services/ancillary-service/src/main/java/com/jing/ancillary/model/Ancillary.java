@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "ancillaries",
 uniqueConstraints = @UniqueConstraint(
         name = "uk_ancillary_airline_code",
-        columnNames = {"airline_code", "code"}),
+        columnNames = {"airline_id", "code"}),   // a code is unique within one airline
         indexes = {
         @Index(name = "idx_ancillary_airline", columnList = "airline_id"),
         @Index(name = "idx_ancillary_type", columnList = "type")

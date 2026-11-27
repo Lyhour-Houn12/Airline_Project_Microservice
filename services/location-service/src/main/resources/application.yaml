@@ -12,9 +12,12 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
 
+  flyway:
+    baseline-on-migrate: true   # a database made before Flyway starts at V1 (already there)
+    baseline-version: 1
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate   # the schema is owned by Flyway (src/main/resources/db/migration)
     show-sql: true
     properties:
       hibernate:
