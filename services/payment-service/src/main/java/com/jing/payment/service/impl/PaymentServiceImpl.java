@@ -1,6 +1,10 @@
 package com.jing.payment.service.impl;
 
+import com.jing.common.dto.booking.BookingPaymentInfo;
 import com.jing.common.security.CurrentUser;
+import com.jing.payment.client.BookingClient;
+import java.time.ZoneId;
+import java.util.Set;
 import com.jing.common.enumeration.PaymentMethod;
 import com.jing.common.enumeration.PaymentStatus;
 import com.jing.common.exception.BadRequestException;
@@ -46,6 +50,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final AbaPayWayClient abaClient;
     private final ApplicationEventPublisher events;
     private final ObjectMapper mapper;
+    private final BookingClient bookingClient;
+
+    private static final Set<String> SUPPORTED_CURRENCIES = Set.of("USD", "KHR");
 
     @Value("${payment.expiry-minutes:15}")
     private long expiryMinutes;
@@ -63,13 +70,20 @@ public class PaymentServiceImpl implements PaymentService {
                 return PaymentMapper.toResponse(existing.get(), null);
             }
         }
-        // TODO (Feign): load the booking from booking-service, check it belongs to user.id(), is PENDING,
-        //  and take amount + currency from it. Until then the amount in the request is NOT trusted data.
+        // amount, currency and reference come from booking-service (400 if the booking can't be paid yet)
+        BookingPaymentInfo booking = bookingClient.paymentInfo(req.bookingId());
+        if (!booking.userId().equals(user.id()) && !user.isAdmin()) {
+            throw new ResourceNotFoundException("Booking", "id", req.bookingId());   // don't reveal it exists
+        }
+        if (!SUPPORTED_CURRENCIES.contains(booking.currency())) {
+            throw new BadRequestException("ABA PayWay only accepts " + SUPPORTED_CURRENCIES
+                    + "; this booking is in " + booking.currency());
+        }
         if (req.method() != PaymentMethod.ABA_PAYWAY) {
             throw new BadRequestException("Only ABA_PAYWAY is supported right now");
         }
         if (paymentRepository.existsByBookingIdAndStatus(req.bookingId(), PaymentStatus.SUCCESS)) {
-            throw new DuplicateResourceException("Booking " + req.bookingReference() + " is already paid");
+            throw new DuplicateResourceException("Booking " + booking.bookingReference() + " is already paid");
         }
         // a new attempt supersedes any open one
         paymentRepository.findByBookingIdAndStatus(req.bookingId(), PaymentStatus.PENDING).forEach(old -> {
@@ -79,14 +93,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = paymentRepository.save(Payment.builder()
                 .bookingId(req.bookingId())
-                .bookingReference(req.bookingReference())
+                .bookingReference(booking.bookingReference())
                 .userId(user.id())
                 .tranId(newTranId())
-                .amount(req.amount())
-                .currency(req.currency() == null ? "USD" : req.currency())
+                .amount(booking.totalAmount())
+                .currency(booking.currency())
                 .method(req.method())
                 .status(PaymentStatus.PENDING)
-                .expiresAt(Instant.now().plus(expiryMinutes, ChronoUnit.MINUTES))
+                .expiresAt(paymentDeadline(booking))
                 .idempotencyKey(blankToNull(idempotencyKey))
                 .build());
 
@@ -246,6 +260,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static String newTranId() {          // 16 digits, PayWay allows max 20
         return System.currentTimeMillis() + String.format("%03d", ThreadLocalRandom.current().nextInt(1000));
+    }
+
+    /** The payment window, but never longer than the booking's own hold (its seats are released then). */
+    private Instant paymentDeadline(BookingPaymentInfo booking) {
+        Instant deadline = Instant.now().plus(expiryMinutes, ChronoUnit.MINUTES);
+        if (booking.expiresAt() != null) {
+            Instant bookingEnd = booking.expiresAt().atZone(ZoneId.systemDefault()).toInstant();
+            if (bookingEnd.isBefore(deadline)) deadline = bookingEnd;
+        }
+        return deadline;
     }
 
     private static String blankToNull(String s) { return s == null || s.isBlank() ? null : s; }

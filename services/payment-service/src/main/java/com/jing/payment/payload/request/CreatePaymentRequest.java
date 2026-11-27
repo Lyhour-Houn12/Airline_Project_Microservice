@@ -1,15 +1,16 @@
 package com.jing.payment.payload.request;
 
 import com.jing.common.enumeration.PaymentMethod;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import java.math.BigDecimal;
-
-public record  CreatePaymentRequest(
+/**
+ * Start paying a booking. Amount, currency and booking reference are NOT accepted from the client:
+ * they are read from booking-service, so nobody can pay $0.01 for a $500 booking.
+ */
+public record CreatePaymentRequest(
         @NotNull Long bookingId,
-        @NotBlank @Size(max = 50) String bookingReference,
-        @NotNull @DecimalMin("0.01") BigDecimal amount,
-        @Pattern(regexp = "USD|KHR") String currency,      // default USD
         @NotNull PaymentMethod method,
         @Size(max = 20) String firstName,
         @Size(max = 20) String lastName,

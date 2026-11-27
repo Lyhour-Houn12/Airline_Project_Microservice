@@ -141,6 +141,16 @@ public class Booking {
         passengers.remove(p);
     }
 
+    /** An unpaid booking whose hold window has passed. */
+    public boolean isExpired(LocalDateTime now) {
+        return status == BookingStatus.PENDING && expiresAt != null && expiresAt.isBefore(now);
+    }
+
+    /** Every passenger-on-a-flight of this booking. */
+    public java.util.stream.Stream<PassengerSegment> passengerSegments() {
+        return segments.stream().flatMap(s -> s.getPassengerSegments().stream());
+    }
+
     public void recalculateTotal(){
         this.totalAmount = segments.stream()
                 .flatMap(s -> s.getPassengerSegments().stream())

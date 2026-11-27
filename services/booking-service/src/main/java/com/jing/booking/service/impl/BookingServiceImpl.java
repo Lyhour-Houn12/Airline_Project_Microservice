@@ -23,7 +23,8 @@ import com.jing.common.exception.ResourceNotFoundException;
 import com.jing.common.pagination.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import com.jing.booking.service.BookingLifecycle;
+import com.jing.booking.service.BookingProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +42,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookingReferenceGenerator bookingReferenceGenerator;
     private final BookingStateMachine bookingStateMachine;
     private final AccessGuard accessGuard;
-
-
-    @Value("${booking.hold-minutes:15}")
-    private long holdMinutes;
+    private final BookingLifecycle bookingLifecycle;
+    private final BookingProperties properties;
 
     @Override
     @Transactional
@@ -71,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
                 .currency(normalizeCurrency(request.currency()))
                 .flexibleTicket(request.flexibleTicket())
                 .contactInfo(request.contactInfo())
-                .expiresAt(LocalDateTime.now().plusMinutes(holdMinutes))
+                .expiresAt(LocalDateTime.now().plusMinutes(properties.holdMinutes()))
                 .idempotencyKey(key)
                 .build();
 
@@ -126,13 +125,8 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Only PENDING or CONFIRMED bookings can be cancelled");
         }
 
-        bookingStateMachine.assertTransition(booking.getStatus(), BookingStatus.CANCELLED);
-
         String reason = (request != null && request.reason() != null) ? request.reason() : "Cancelled by user";
-
-        booking.changeStatus(BookingStatus.CANCELLED, String.valueOf(user.id()), reason);
-
-        // TODO (later steps): release held seats and meals; start refund for CONFIRMED bookings
+        bookingLifecycle.close(booking, BookingStatus.CANCELLED, String.valueOf(user.id()), reason);
         return BookingMapper.toResponse(bookingRepository.save(booking));
     }
 
@@ -140,16 +134,23 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponse changeStatus(Long id, ChangeStatusRequest request, CurrentUser user) {
         accessGuard.requireAdmin(user, "change a booking status directly");
-        Booking booking = bookingRepository.findById(id)
+        Booking booking = bookingRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new ResourceNotFoundException("booking", "id", id));
 
         if (booking.getStatus() == request.status()) {
             throw new BadRequestException("Booking is already " + request.status());
         }
 
-        bookingStateMachine.assertTransition(booking.getStatus(), request.status());
-
-        booking.changeStatus(request.status(), "ADMIN:" + user.id(), request.reason());
+        String by = "ADMIN:" + user.id();
+        // statuses with side effects (seats, tickets) go through the lifecycle, the rest is a plain change
+        switch (request.status()) {
+            case CONFIRMED -> bookingLifecycle.confirm(booking, null, by);
+            case CANCELLED, EXPIRED -> bookingLifecycle.close(booking, request.status(), by, request.reason());
+            default -> {
+                bookingStateMachine.assertTransition(booking.getStatus(), request.status());
+                booking.changeStatus(request.status(), by, request.reason());
+            }
+        }
         return BookingMapper.toResponse(bookingRepository.save(booking));
     }
 

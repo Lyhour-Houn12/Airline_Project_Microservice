@@ -1,25 +1,27 @@
 package com.jing.booking.mapper;
 
 import com.jing.booking.model.BookingSegment;
-import com.jing.booking.payload.request.BookingSegmentRequest;
+import com.jing.common.dto.flight.FlightInstanceResponse;
+import com.jing.common.dto.pricing.FareResponse;
 import com.jing.booking.payload.response.BookingSegmentResponse;
 
 public final class BookingSegmentMapper {
     private BookingSegmentMapper() {}
 
-    public static BookingSegment toEntity(BookingSegmentRequest r) {
+    /** Builds a segment from the real flight and fare (journey, order and prices are set by the service). */
+    public static BookingSegment toEntity(FlightInstanceResponse flight, FareResponse fare) {
         return BookingSegment.builder()
-                .flightId(r.flightId())
-                .flightInstanceId(r.flightInstanceId())
-                .airlineId(r.airlineId())
-                .fareId(r.fareId())
-                .cabinClassId(r.cabinClassId())
-                .cabinClass(r.cabinClass())
-                .departureAirportId(r.departureAirportId())
-                .arrivalAirportId(r.arrivalAirportId())
-                .departureTime(r.departureTime())
-                .arrivalTime(r.arrivalTime())
-                .flightNumber(r.flightNumber())
+                .flightId(flight.getFlightId())
+                .flightInstanceId(flight.getId())
+                .airlineId(flight.getAirlineId())
+                .fareId(fare.getId())
+                .cabinClassId(fare.getCabinClassId())
+                .cabinClass(fare.getCabinClass())
+                .departureAirportId(flight.getDepartureAirportId())
+                .arrivalAirportId(flight.getArrivalAirportId())
+                .departureTime(flight.getDepartureDateTime())
+                .arrivalTime(flight.getArrivalDateTime())
+                .flightNumber(flight.getFlightNumber())
                 .build();
     }
 

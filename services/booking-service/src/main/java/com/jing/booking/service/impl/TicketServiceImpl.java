@@ -13,6 +13,7 @@ import com.jing.booking.utils.AccessGuard;
 import com.jing.booking.validatation.BookingSegmentValidator;
 import com.jing.common.enumeration.BookingStatus;
 import com.jing.common.enumeration.PassengerSegmentStatus;
+import com.jing.common.enumeration.TicketStatus;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -51,30 +52,44 @@ public class TicketServiceImpl implements TicketService {
             throw new BadRequestException(
                     "Tickets can only be issued for a CONFIRMED booking (current: " + booking.getStatus() + ")");
 
+        List<TicketResponse> issued = issueTickets(booking);
+        if (issued.isEmpty())
+            throw new BadRequestException("No passenger segments left to ticket for this booking");
+        return issued;
+    }
+
+    /** One ticket per passenger per flight; already ticketed passenger segments are skipped. */
+    @Override
+    @Transactional
+    public List<TicketResponse> issueTickets(Booking booking) {
         segmentValidator.validateComplete(booking);
 
-        Set<Long> alreadyTicketed = ticketRepository.findByBookingId(bookingId).stream()
+        Set<Long> alreadyTicketed = ticketRepository.findByBookingId(booking.getId()).stream()
                 .map(t -> t.getPassengerSegment().getId())
                 .collect(Collectors.toSet());
 
-        List<Ticket> issued = new ArrayList<Ticket>();
-        for (BookingSegment segment: booking.getSegments()){
-            for (PassengerSegment ps: segment.getPassengerSegments()){
+        List<Ticket> issued = new ArrayList<>();
+        for (BookingSegment segment : booking.getSegments()) {
+            for (PassengerSegment ps : segment.getPassengerSegments()) {
                 if (ps.getStatus() == PassengerSegmentStatus.CANCELLED) continue;
                 if (alreadyTicketed.contains(ps.getId())) continue;
-
                 issued.add(ticketRepository.save(Ticket.builder()
-                                .ticketNumber(generateTicketNumber())
-                                .booking(booking)
-                                .passengerSegment(ps)   // belongs to this booking by construction
+                        .ticketNumber(generateTicketNumber())
+                        .booking(booking)
+                        .passengerSegment(ps)   // belongs to this booking by construction
                         .build()));
             }
         }
-
-        if (issued.isEmpty())
-            throw new BadRequestException("No passenger segments left to ticket for this booking");
-
         return issued.stream().map(TicketMapper::toResponse).toList();
+    }
+
+    /** Cancelling a booking voids its tickets that were not used yet. */
+    @Override
+    @Transactional
+    public int voidIssuedTickets(Booking booking) {
+        List<Ticket> issued = ticketRepository.findByBookingIdAndStatus(booking.getId(), TicketStatus.ISSUED);
+        issued.forEach(Ticket::voidTicket);
+        return issued.size();
     }
 
     @Override

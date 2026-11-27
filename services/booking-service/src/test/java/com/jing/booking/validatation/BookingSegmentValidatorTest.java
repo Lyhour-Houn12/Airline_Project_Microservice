@@ -2,8 +2,6 @@ package com.jing.booking.validatation;
 
 import com.jing.booking.model.Booking;
 import com.jing.booking.model.BookingSegment;
-import com.jing.booking.payload.request.BookingSegmentRequest;
-import com.jing.common.enumeration.CabinClassType;
 import com.jing.common.enumeration.TripType;
 import com.jing.common.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
@@ -25,7 +23,7 @@ class BookingSegmentValidatorTest {
         add(booking, PNH, BKK, 1, 5);
 
         // before the fix, journey 2 was rejected for every booking
-        int journey = validator.validate(booking, request(10, BKK, PNH, 8, 2));
+        int journey = validator.validate(booking, candidate(10, BKK, PNH, 8), 2);
 
         assertThat(journey).isEqualTo(2);
     }
@@ -35,7 +33,7 @@ class BookingSegmentValidatorTest {
         Booking booking = booking(TripType.ONE_WAY);
         add(booking, PNH, BKK, 1, 5);
 
-        assertThatThrownBy(() -> validator.validate(booking, request(10, BKK, SIN, 8, 2)))
+        assertThatThrownBy(() -> validator.validate(booking, candidate(10, BKK, SIN, 8), 2))
                 .isInstanceOf(BadRequestException.class);
     }
 
@@ -77,10 +75,14 @@ class BookingSegmentValidatorTest {
                 .build());
     }
 
-    private static BookingSegmentRequest request(long flightInstanceId, long from, long to,
-                                                 int daysFromNow, Integer journey) {
+    private static BookingSegment candidate(long flightInstanceId, long from, long to, int daysFromNow) {
         LocalDateTime departure = LocalDateTime.now().plusDays(daysFromNow);
-        return new BookingSegmentRequest(1L, flightInstanceId, 1L, 1L, 1L, CabinClassType.ECONOMY,
-                from, to, departure, departure.plusHours(2), "VN123", journey);
+        return BookingSegment.builder()
+                .flightInstanceId(flightInstanceId)
+                .departureAirportId(from)
+                .arrivalAirportId(to)
+                .departureTime(departure)
+                .arrivalTime(departure.plusHours(2))
+                .build();
     }
 }

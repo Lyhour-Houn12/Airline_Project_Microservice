@@ -4,6 +4,7 @@ import com.jing.common.enumeration.CabinClassType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,20 @@ public class BookingSegment {
 
     @Column(name = "journey_number", nullable = false)
     private int journeyNumber;
+
+    // Fare snapshot (one adult) taken from pricing-service when the segment was added.
+    // Passengers added later are priced from this, so a later fare change can't alter the booking.
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal baseFare = BigDecimal.ZERO;
+
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal taxesAndFees = BigDecimal.ZERO;
+
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal airlineFees = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "segment", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

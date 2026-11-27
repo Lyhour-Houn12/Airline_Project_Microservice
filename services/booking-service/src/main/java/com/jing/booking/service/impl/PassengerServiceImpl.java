@@ -1,5 +1,9 @@
 package com.jing.booking.service.impl;
 
+import com.jing.booking.model.PassengerSegment;
+import com.jing.booking.service.FareCalculator;
+import com.jing.booking.service.SeatInventory;
+
 import com.jing.booking.mapper.PassengerMapper;
 import com.jing.booking.model.Booking;
 import com.jing.booking.model.Passenger;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 
 @Slf4j
@@ -34,6 +39,8 @@ public class PassengerServiceImpl implements PassengerService {
     private final BookingRepository bookingRepository;
     private final PassengerValidator passengerValidator;
     private final AccessGuard accessGuard;
+    private final FareCalculator fareCalculator;
+    private final SeatInventory seatInventory;
 
     @Override
     public PassengerResponse add(Long bookingId, PassengerRequest request, CurrentUser user) {
@@ -48,7 +55,7 @@ public class PassengerServiceImpl implements PassengerService {
         Passenger passenger = PassengerMapper.toEntity(request, accompanyingAdult);
 
         booking.addPassenger(passenger);
-        booking.getSegments().forEach(s -> booking.link(passenger, s));
+        booking.getSegments().forEach(s -> fareCalculator.price(booking.link(passenger, s)));
         booking.recalculateTotal();
 
         bookingRepository.saveAndFlush(booking);           // flush so the new id exists
@@ -80,6 +87,9 @@ public class PassengerServiceImpl implements PassengerService {
 
         Passenger adultAccompanying =  passengerValidator.validate(request, booking, passenger);
         PassengerMapper.apply(passenger, request, adultAccompanying);
+        // the passenger type may have changed (adult <-> child): price every flight again
+        passenger.getPassengerSegments().forEach(fareCalculator::price);
+        booking.recalculateTotal();
 
         bookingRepository.saveAndFlush(booking);
         return PassengerMapper.toResponse(passenger);
@@ -94,10 +104,12 @@ public class PassengerServiceImpl implements PassengerService {
             throw new BadRequestException("This adult travels with an infant. Remove the infant first");
         }
 
+        List<Long> seats = passenger.getPassengerSegments().stream()
+                .map(PassengerSegment::getSeatInstanceId).filter(Objects::nonNull).toList();
         booking.removePassenger(passenger);
         booking.recalculateTotal();
         bookingRepository.saveAndFlush(booking);
-        // TODO (Feign): release this passenger's seats in seat-service
+        seatInventory.releaseAfterCommit(booking, seats);
     }
 
 

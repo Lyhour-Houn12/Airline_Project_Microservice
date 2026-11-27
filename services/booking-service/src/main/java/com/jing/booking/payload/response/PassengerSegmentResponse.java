@@ -16,6 +16,7 @@ public record PassengerSegmentResponse(
         BigDecimal baseFare,
         BigDecimal taxesAndFees,
         BigDecimal airlineFees,
+        BigDecimal seatSurcharge,
         BigDecimal totalPrices
 ) {
 }

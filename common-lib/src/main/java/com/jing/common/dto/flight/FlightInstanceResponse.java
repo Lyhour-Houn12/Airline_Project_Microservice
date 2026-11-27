@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class FlightInstanceResponse {
+    private Long id;
     private Long flightId;
     private String flightNumber;
 
@@ -28,6 +29,8 @@ public class FlightInstanceResponse {
     private Long aircraftId;
     private String aircraftModal;
     private String aircraftCode;
+    private Long departureAirportId;
+    private Long arrivalAirportId;
     private AirportResponse departureAirport;
     private AirportResponse arrivalAirport;
 

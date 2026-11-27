@@ -41,6 +41,7 @@ public class FlightInstanceMapper {
                                                     AirportResponse arrivalAirport) {
         if (fi == null) return null;
         return FlightInstanceResponse.builder()
+                .id(fi.getId())
                 .flightId(fi.getFlight() != null ? fi.getFlight().getId() : null)
                 .flightNumber(fi.getFlight() != null ? fi.getFlight().getFlightNumber() : null)
                 .aircraftId(fi.getFlight().getAircraftId())
@@ -49,6 +50,8 @@ public class FlightInstanceMapper {
                 .airlineId(fi.getAirlineId())
                 .airlineName(airline != null ? airline.getAirlineName() : null)
                 .airlineLogo(airline != null ? airline.getLogoUrl() : null)
+                .departureAirportId(fi.getDepartureAirportId())
+                .arrivalAirportId(fi.getArrivalAirportId())
                 .departureAirport(departureAirport)
                 .arrivalAirport(arrivalAirport)
                 .departureDateTime(fi.getDepartureDateTime())

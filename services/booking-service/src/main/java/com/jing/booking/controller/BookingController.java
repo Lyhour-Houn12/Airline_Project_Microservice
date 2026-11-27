@@ -29,7 +29,7 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    // TEMPORARY: remove when the real create-booking flow is built
+    // Step 1 of booking: an empty PENDING booking. Then add flights, passengers, seats, and pay.
     @PostMapping("/draft")
     public ResponseEntity<BookingResponse> createDraft(
             @Valid @RequestBody CreateDraftBookingRequest request,
