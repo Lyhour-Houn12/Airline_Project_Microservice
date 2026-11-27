@@ -76,8 +76,9 @@ public class FlightInstanceController {
     @PatchMapping("/{id}/status")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     public ResponseEntity<FlightInstanceResponse> changeStatus(CurrentUser user, @PathVariable Long id,
-                                                               @RequestParam FlightStatus status) {
-        return ResponseEntity.ok(flightInstanceService.changeStatus(user, id, status));
+                                                               @RequestParam FlightStatus status,
+                                                               @RequestParam(required = false) String reason) {
+        return ResponseEntity.ok(flightInstanceService.changeStatus(user, id, status, reason));
     }
 
     @DeleteMapping("/{id}")

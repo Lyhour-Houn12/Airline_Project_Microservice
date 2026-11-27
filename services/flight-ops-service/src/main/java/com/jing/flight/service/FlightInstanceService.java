@@ -30,7 +30,8 @@ public interface FlightInstanceService {
 
     FlightInstanceResponse updateFlightInstance(CurrentUser user, Long id, FlightInstanceRequest request);
 
-    FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status);
+    /** CANCELLED is final, and cancels + refunds every booking on the flight (through the outbox). */
+    FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status, String reason);
 
     void deleteFlightInstance(CurrentUser user, Long id);
 

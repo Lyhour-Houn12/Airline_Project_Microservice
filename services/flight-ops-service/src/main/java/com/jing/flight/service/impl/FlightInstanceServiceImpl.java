@@ -1,5 +1,7 @@
 package com.jing.flight.service.impl;
 
+import com.jing.flight.outbox.Outbox;
+import com.jing.flight.service.messaging.FlightCancelledHandler;
 import com.jing.common.airline.AirlineAccess;
 import com.jing.common.security.CurrentUser;
 import com.jing.flight.client.AirportZones;
@@ -44,6 +46,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
     private final FlightRepository flightRepository;
     private final AirportZones airportZones;
     private final AirlineAccess airlineAccess;
+    private final Outbox outbox;
 
 
     @Override
@@ -132,6 +135,13 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         if (request.getAirlineId() != null && !request.getAirlineId().equals(existing.getAirlineId())) {
             throw new BadRequestException("A flight instance cannot be moved to another airline");
         }
+        if (request.getStatus() != null && request.getStatus() != existing.getStatus()) {
+            // one door for status changes: it applies the rules and tells booking-service
+            throw new BadRequestException("Change the status with PATCH /api/v1/flight-instances/" + id + "/status");
+        }
+        if (existing.getStatus() == FlightStatus.CANCELLED) {
+            throw new BadRequestException("Flight instance " + id + " is CANCELLED and can't be changed");
+        }
 
         if (request.getFlightId() != null && !request.getFlightId().equals(existing.getFlight().getId())) {
             throw new BadRequestException("A flight instance cannot be moved to a different flight");
@@ -149,7 +159,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     @Override
     @Transactional
-    public FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status) {
+    public FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status, String reason) {
         requireId(id, "Flight instance ID");
         if (status == null) {
             throw new BadRequestException("Status is required");
@@ -159,8 +169,18 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         if (existing.getStatus() == status) {
             return toResponse(existing);
         }
-        // TODO: add transition rules once you decide them (e.g. no changes out of CANCELLED)
+        if (existing.getStatus() == FlightStatus.CANCELLED) {
+            // passengers have been cancelled and refunded: the flight can't come back
+            throw new BadRequestException("Flight instance " + id + " is CANCELLED; create a new flight instance instead");
+        }
         existing.setStatus(status);
+        if (status == FlightStatus.CANCELLED) {
+            // in the same transaction: booking-service cancels and refunds every booking on it
+            outbox.enqueue(FlightCancelledHandler.TYPE, existing.getId(), new FlightCancelledHandler.Payload(
+                    existing.getId(), existing.getFlight().getFlightNumber(), reason));
+            log.info("Flight instance {} ({}) cancelled by user {}: {}", id,
+                    existing.getFlight().getFlightNumber(), user.id(), reason);
+        }
         return toResponse(flightInstanceRepository.save(existing));
     }
 
