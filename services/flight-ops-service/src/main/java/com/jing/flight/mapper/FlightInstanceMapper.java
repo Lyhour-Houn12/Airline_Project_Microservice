@@ -54,6 +54,7 @@ public class FlightInstanceMapper {
                 .arrivalAirportId(fi.getArrivalAirportId())
                 .departureAirport(departureAirport)
                 .arrivalAirport(arrivalAirport)
+                .scheduleId(fi.getScheduleId())
                 .departureDateTime(fi.getDepartureDateTime())
                 .arrivalDateTime(fi.getArrivalDateTime())
                 .departureAt(fi.getDepartureAt())

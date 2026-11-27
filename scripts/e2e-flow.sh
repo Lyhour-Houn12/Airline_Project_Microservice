@@ -174,6 +174,12 @@ INSTANCE="$(j 'd["content"][0]["id"]')"
 info "schedule $SCHEDULE -> instance $INSTANCE: departs $(j 'd["content"][0].get("departureAt")') UTC, arrives $(j 'd["content"][0].get("arrivalAt")') UTC"
 # (JSON values go through a variable: Bash 3.2 brace-expands a quoted {..,..} inside $(..))
 CABINS="[{\"cabinClassId\": $CABIN}]"
+# and a one-off extra flight the next evening, created directly, without a schedule
+NEXT_DAY="$(python3 -I -c 'import datetime; print(datetime.date.today()+datetime.timedelta(days=31))')"
+AFTER="$(python3 -I -c 'import datetime; print(datetime.date.today()+datetime.timedelta(days=32))')"
+must POST /api/v1/flight-instances "$OWNER" "$(json flightId="$FLIGHT" departureDateTime="${NEXT_DAY}T23:00:00" arrivalDateTime="${AFTER}T07:00:00" totalSeats=60)" "create a one-off flight instance"
+[ -z "$(j 'd.get("scheduleId")')" ] || die "the one-off flight should have no schedule"
+info "one-off extra flight: instance $(j 'd["id"]') on $NEXT_DAY 23:00, no schedule"
 must POST /api/v1/flight-instance-cabins "$OWNER" "$(json flightInstanceId="$INSTANCE" cabins="$CABINS")" "open the cabin for sale"
 must POST /api/v1/seat-instances/generate "$OWNER" "$(json flightInstanceId="$INSTANCE")" "generate seat inventory"
 must POST /api/v1/fares "$OWNER" "$(json fareName="Economy Saver" fareLabel=Saver rbdCode=V airlineId="$AIRLINE" flightId="$FLIGHT" cabinClassId="$CABIN" cabinClass=ECONOMY baseFare=250.00 taxesAndFees=35.00 airlineFees=0 currency=USD)" "create Saver fare"

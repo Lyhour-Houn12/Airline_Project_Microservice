@@ -22,7 +22,7 @@ public class FlightInstanceRequest {
 
     private Long airlineId;
 
-    private Long scheduleId;
+    private Long scheduleId;            // optional: leave empty for a one-off flight (extra, charter, replacement)
 
     private Long departureAirportId;
 

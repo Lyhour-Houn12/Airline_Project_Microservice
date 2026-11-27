@@ -40,7 +40,7 @@ public class FlightInstance {
     private Long arrivalAirportId;
 
 
-    @Column(nullable = false)
+    // the schedule that generated this flight; null for a one-off flight (extra, charter, replacement)
     private Long scheduleId;
 
     @Column(nullable = false)
