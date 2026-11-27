@@ -7,7 +7,7 @@ import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -26,9 +26,9 @@ public class BookingSegmentValidator {
         // --- the segment on its own ---
         if (req.getDepartureAirportId().equals(req.getArrivalAirportId()))
             throw new BadRequestException("Departure and arrival airport must be different");
-        if (!req.getArrivalTime().isAfter(req.getDepartureTime()))
+        if (!req.arrivesAt().isAfter(req.departsAt()))
             throw new BadRequestException("Arrival time must be after departure time");
-        if (!req.getDepartureTime().isAfter(LocalDateTime.now()))
+        if (!req.departsAt().isAfter(Instant.now()))
             throw new BadRequestException("Departure time must be in the future");
 
         if (existing.stream().anyMatch(s -> s.getFlightInstanceId().equals(req.getFlightInstanceId())))
@@ -39,7 +39,9 @@ public class BookingSegmentValidator {
         int journey = resolveJourney(type, last, requestedJourney);
 
         if (last != null) {
-            if (!req.getDepartureTime().isAfter(last.getArrivalTime()))
+            // compared on the UTC clock: local times of two airports in different zones say nothing
+            // (10:00 in Tokyo is earlier than 09:00 in Phnom Penh on the same day)
+            if (!req.departsAt().isAfter(last.arrivesAt()))
                 throw new BadRequestException("Segment must depart after the previous segment arrives");
 
             if (journey == last.getJourneyNumber()) {

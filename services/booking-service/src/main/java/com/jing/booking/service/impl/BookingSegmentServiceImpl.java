@@ -32,7 +32,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
@@ -129,8 +131,14 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
             throw new BadRequestException("Flight " + flight.getFlightNumber() + " is not open for booking ("
                     + flight.getStatus() + ")");
         }
+        if (flight.getDepartureAt() == null || flight.getDepartureTimeZone() == null) {
+            // flight-ops couldn't work out its real time (missing airport / time zone): don't sell it
+            throw new BadRequestException("Flight " + flight.getFlightNumber()
+                    + " can't be booked yet: its airport time zones are not set up");
+        }
+        // "how many days before departure" counts days at the departure airport, not on our server
         LocalDate departureDay = flight.getDepartureDateTime().toLocalDate();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of(flight.getDepartureTimeZone()));
         if (flight.getMinAdvanceBookingDays() != null
                 && departureDay.isBefore(today.plusDays(flight.getMinAdvanceBookingDays()))) {
             throw new BadRequestException("Flight " + flight.getFlightNumber() + " must be booked at least "
@@ -141,7 +149,7 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
             throw new BadRequestException("Flight " + flight.getFlightNumber() + " can be booked at most "
                     + flight.getMaxAdvanceBookingDays() + " day(s) before departure");
         }
-        if (!flight.getDepartureDateTime().isAfter(LocalDateTime.now())) {
+        if (!flight.getDepartureAt().isAfter(Instant.now())) {
             throw new BadRequestException("Flight " + flight.getFlightNumber() + " has already departed");
         }
     }

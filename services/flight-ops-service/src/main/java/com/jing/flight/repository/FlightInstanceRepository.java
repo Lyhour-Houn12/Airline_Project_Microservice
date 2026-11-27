@@ -34,4 +34,7 @@ public interface FlightInstanceRepository extends JpaRepository<FlightInstance, 
                                            @Param("start") LocalDateTime start,
                                            @Param("end") LocalDateTime end);
 
+
+    /** Rows from before time zones existed (FlightTimeZoneBackfill). */
+    java.util.List<FlightInstance> findTop500ByDepartureAtIsNullOrderByIdAsc();
 }

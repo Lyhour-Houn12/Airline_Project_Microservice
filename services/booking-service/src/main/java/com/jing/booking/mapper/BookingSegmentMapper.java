@@ -21,6 +21,10 @@ public final class BookingSegmentMapper {
                 .arrivalAirportId(flight.getArrivalAirportId())
                 .departureTime(flight.getDepartureDateTime())
                 .arrivalTime(flight.getArrivalDateTime())
+                .departureAt(flight.getDepartureAt())
+                .arrivalAt(flight.getArrivalAt())
+                .departureTimeZone(flight.getDepartureTimeZone())
+                .arrivalTimeZone(flight.getArrivalTimeZone())
                 .flightNumber(flight.getFlightNumber())
                 .build();
     }
@@ -41,6 +45,10 @@ public final class BookingSegmentMapper {
                 s.getArrivalAirportId(),
                 s.getDepartureTime(),
                 s.getArrivalTime(),
+                s.getDepartureAt(),
+                s.getArrivalAt(),
+                s.getDepartureTimeZone(),
+                s.getArrivalTimeZone(),
                 s.getFlightNumber(),
                 s.getPassengerSegments().stream()
                         .map(PassengerSegmentMapper::toResponse)
