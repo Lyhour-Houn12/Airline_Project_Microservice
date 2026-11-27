@@ -1,5 +1,6 @@
 package com.jing.flight.service;
 
+import com.jing.common.security.CurrentUser;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.dto.flight.FlightInstanceRequest;
 import com.jing.common.dto.flight.FlightInstanceResponse;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FlightInstanceService {
-    FlightInstanceResponse createFlightInstanceWithCabins(Long userId, FlightInstanceRequest request);
+    FlightInstanceResponse createFlightInstanceWithCabins(CurrentUser user, FlightInstanceRequest request);
 
     /**
      * Replaces getFlightInstance + getByAirlineId.
@@ -27,11 +28,11 @@ public interface FlightInstanceService {
 
     FlightInstanceResponse getFlightInstanceById(Long id);
 
-    FlightInstanceResponse updateFlightInstance(Long id, FlightInstanceRequest request);
+    FlightInstanceResponse updateFlightInstance(CurrentUser user, Long id, FlightInstanceRequest request);
 
-    FlightInstanceResponse changeStatus(Long id, FlightStatus status);
+    FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status);
 
-    void deleteFlightInstance(Long id);
+    void deleteFlightInstance(CurrentUser user, Long id);
 
     Map<Long, FlightInstanceResponse> getFlightInstancesByIds(List<Long> ids);
 

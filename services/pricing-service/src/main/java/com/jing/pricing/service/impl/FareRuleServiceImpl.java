@@ -1,5 +1,7 @@
 package com.jing.pricing.service.impl;
 
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -27,14 +29,16 @@ public class FareRuleServiceImpl implements FareRuleService {
 
     private final FareRuleRepository fareRuleRepository;
     private final FareRepository fareRepository;
+    private final AirlineAccess airlineAccess;
 
     @Override
     @Transactional
-    public FareRulesResponse createFareRule(FareRulesRequest request) {
+    public FareRulesResponse createFareRule(CurrentUser user, FareRulesRequest request) {
         normalizeAndValidateBasics(request);
 
         Fare fare = fareRepository.findById(request.getFareId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fare", "id", request.getFareId()));
+        airlineAccess.requireCanManage(user, fare.getAirlineId());
 
         if (fareRuleRepository.existsByFareId(fare.getId())) {
             throw new DuplicateResourceException("FareRule", "fareId", fare.getId());
@@ -64,8 +68,9 @@ public class FareRuleServiceImpl implements FareRuleService {
 
     @Override
     @Transactional
-    public FareRulesResponse updateFareRule(Long id, FareRulesRequest request) {
+    public FareRulesResponse updateFareRule(CurrentUser user, Long id, FareRulesRequest request) {
         FareRule rule = findOrThrow(id);
+        airlineAccess.requireCanManage(user, rule.getFare().getAirlineId());
         normalizeAndValidateBasics(request);
 
         Fare fare = rule.getFare();
@@ -82,8 +87,9 @@ public class FareRuleServiceImpl implements FareRuleService {
 
     @Override
     @Transactional
-    public void deleteFareRule(Long id) {
+    public void deleteFareRule(CurrentUser user, Long id) {
         FareRule rule = findOrThrow(id);
+        airlineAccess.requireCanManage(user, rule.getFare().getAirlineId());
         Fare fare = rule.getFare();
         fare.setFareRule(null);          // detach from the parent first so cascade doesn't re-save it
         fareRuleRepository.delete(rule);

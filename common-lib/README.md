@@ -39,6 +39,22 @@ public PageResponse<MealResponse> list(@AuthUser(required = false) CurrentUser u
 `@RequireRole` works on a method or on the whole controller class (a method annotation wins).
 Resource rules such as "only the owner of this booking" still belong in the service.
 
+## Airline ownership (`airline/`)
+
+`AirlineAccess` decides who may change airline data: a system admin may change everything, an airline
+owner only their own airline's (airline-core knows who owns what), and an aircraft may only be used by
+its own airline.
+
+```java
+airlineAccess.requireCanManage(user, flight.getAirlineId());        // 403 for another airline
+Long airlineId = airlineAccess.airlineForNew(user, request.getAirlineId()); // owners always get their own
+airlineAccess.requireAircraftOf(request.getAircraftId(), airlineId); // exists, same airline, ACTIVE
+```
+
+It isn't a Spring component: a service that needs it adds `com.jing.common.airline` to its
+`@EnableFeignClients` packages and declares the bean (see any service's `config/AirlineAccessConfig`).
+Used by flight-ops, pricing, seat, ancillary and booking (owners can read bookings on their flights).
+
 ## Paging (`pagination/`)
 
 ```java

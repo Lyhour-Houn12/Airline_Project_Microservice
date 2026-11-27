@@ -1,5 +1,7 @@
 package com.jing.pricing.service.impl;
 
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -30,14 +32,16 @@ public class BaggagePolicyServiceImpl implements BaggagePolicyService {
 
     private final BaggagePolicyRepository baggagePolicyRepository;
     private final FareRepository fareRepository;
+    private final AirlineAccess airlineAccess;
 
     @Override
     @Transactional
-    public BaggagePolicyResponse createBaggagePolicy(BaggagePolicyRequest request) {
+    public BaggagePolicyResponse createBaggagePolicy(CurrentUser user, BaggagePolicyRequest request) {
         normalizeAndValidateBasics(request);
 
         Fare fare = fareRepository.findById(request.getFareId())
                 .orElseThrow(() -> new ResourceNotFoundException("Fare", "id", request.getFareId()));
+        airlineAccess.requireCanManage(user, fare.getAirlineId());
 
         if (baggagePolicyRepository.existsByFareId(fare.getId())) {
             throw new DuplicateResourceException("BaggagePolicy", "fareId", fare.getId());
@@ -67,8 +71,9 @@ public class BaggagePolicyServiceImpl implements BaggagePolicyService {
 
     @Override
     @Transactional
-    public BaggagePolicyResponse updateBaggagePolicy(Long id, BaggagePolicyRequest request) {
+    public BaggagePolicyResponse updateBaggagePolicy(CurrentUser user, Long id, BaggagePolicyRequest request) {
         BaggagePolicy policy = findOrThrow(id);
+        airlineAccess.requireCanManage(user, policy.getFare().getAirlineId());
         normalizeAndValidateBasics(request);
 
         if (!Objects.equals(policy.getFare().getId(), request.getFareId())) {
@@ -84,8 +89,9 @@ public class BaggagePolicyServiceImpl implements BaggagePolicyService {
 
     @Override
     @Transactional
-    public void deleteBaggagePolicy(Long id) {
+    public void deleteBaggagePolicy(CurrentUser user, Long id) {
         BaggagePolicy policy = findOrThrow(id);
+        airlineAccess.requireCanManage(user, policy.getFare().getAirlineId());
         policy.getFare().setBaggagePolicy(null);   // detach from the parent first
         baggagePolicyRepository.delete(policy);
         log.info("Deleted baggage policy id={}", id);

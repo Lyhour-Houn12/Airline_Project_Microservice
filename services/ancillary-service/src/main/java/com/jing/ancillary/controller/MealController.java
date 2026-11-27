@@ -1,5 +1,6 @@
 package com.jing.ancillary.controller;
 
+import com.jing.ancillary.service.AncillaryOwnership;
 import com.jing.common.security.RequireRole;
 import com.jing.common.security.AuthUser;
 import com.jing.common.security.CurrentUser;
@@ -29,13 +30,16 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class MealController {
 
     private final MealService mealService;
+    private final AncillaryOwnership ownership;
 
     // 1. CREATE meal: multipart = "meal" (JSON) + optional "file" (image)
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MealResponse> create(
+            CurrentUser user,
             @Valid @RequestPart("meal") MealRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file) {
+        ownership.newRecord(user, request.airlineId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mealService.createMeal(request, file));
     }
@@ -77,23 +81,29 @@ public class MealController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MealResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @Valid @RequestBody MealRequest request) {
+        ownership.meal(user, id);
         return ResponseEntity.ok(mealService.updateMeal(id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PatchMapping("/{id}/status")
     public ResponseEntity<MealResponse> changeStatus(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestParam boolean active) {
+        ownership.meal(user, id);
         return ResponseEntity.ok(mealService.changeStatus(id, active));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.meal(user, id);
         mealService.deleteMeal(id);
         return ResponseEntity.noContent().build();
     }
@@ -101,15 +111,19 @@ public class MealController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MealResponse> uploadImage(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) {
+        ownership.meal(user, id);
         return ResponseEntity.ok(mealService.uploadImage(id, file));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}/image")
     public ResponseEntity<MealResponse> deleteImage(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.meal(user, id);
         return ResponseEntity.ok(mealService.deleteImage(id));
     }
 }

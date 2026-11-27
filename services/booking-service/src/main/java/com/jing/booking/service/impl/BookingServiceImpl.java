@@ -18,6 +18,7 @@ import com.jing.booking.utils.AccessGuard;
 import com.jing.common.pagination.PageableFactory;
 import com.jing.common.enumeration.BookingStatus;
 import com.jing.common.exception.BadRequestException;
+import com.jing.common.exception.ForbiddenException;
 import com.jing.common.exception.DuplicateResourceException;
 import com.jing.common.exception.ResourceNotFoundException;
 import com.jing.common.pagination.PageResponse;
@@ -104,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return PageResponse.from(
-                bookingRepository.findAll(BookingSpecification.withFilter(filter, user), PageableFactory.of(page, size, sortBy, sortDirection, SORTABLE, "bookingDate"))
+                bookingRepository.findAll(BookingSpecification.withFilter(filter, user, accessGuard.visibleAirline(user).orElse(null)), PageableFactory.of(page, size, sortBy, sortDirection, SORTABLE, "bookingDate"))
                         .map(BookingMapper::toResponse)
         );
     }
@@ -120,6 +121,11 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponse cancel(Long id, CancelBookingRequest request, CurrentUser user) {
         Booking booking = loadAccessible(id, user);
+        // seeing a booking is not enough to cancel it: airline owners may view bookings on their flights,
+        // but only the customer who booked it (or an admin) may cancel
+        if (!user.isAdmin() && !accessGuard.isBookingOwner(booking, user)) {
+            throw new ForbiddenException("Only the customer who made this booking can cancel it");
+        }
 
         if (booking.getStatus() != BookingStatus.PENDING && booking.getStatus() != BookingStatus.CONFIRMED) {
             throw new BadRequestException("Only PENDING or CONFIRMED bookings can be cancelled");

@@ -1,5 +1,6 @@
 package com.jing.ancillary.controller;
 
+import com.jing.ancillary.service.AncillaryOwnership;
 import com.jing.common.security.RequireRole;
 import com.jing.common.security.AuthUser;
 import com.jing.common.security.CurrentUser;
@@ -26,11 +27,14 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class AncillaryController {
 
     private final AncillaryService ancillaryService;
+    private final AncillaryOwnership ownership;
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping
     public ResponseEntity<AncillaryResponse> create(
+            CurrentUser user,
             @Valid @RequestBody AncillaryRequest request) {
+        ownership.newRecord(user, request.airlineId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ancillaryService.createAncillary(request));
     }
@@ -68,23 +72,29 @@ public class AncillaryController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<AncillaryResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @Valid @RequestBody AncillaryRequest request) {
+        ownership.ancillary(user, id);
         return ResponseEntity.ok(ancillaryService.updateAncillary(id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PatchMapping("/{id}/status")
     public ResponseEntity<AncillaryResponse> changeStatus(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestParam boolean active) {
+        ownership.ancillary(user, id);
         return ResponseEntity.ok(ancillaryService.changeStatus(id, active));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.ancillary(user, id);
         ancillaryService.deleteAncillary(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,5 +1,6 @@
 package com.jing.pricing.controller;
 
+import com.jing.common.security.CurrentUser;
 import com.jing.common.security.RequireRole;
 import com.jing.common.dto.pricing.FareRulesRequest;
 import com.jing.common.dto.pricing.FareRulesResponse;
@@ -22,8 +23,9 @@ public class FareRuleController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping
     public ResponseEntity<FareRulesResponse> create(
+            CurrentUser user,
             @RequestBody FareRulesRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(fareRuleService.createFareRule(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(fareRuleService.createFareRule(user, request));
     }
 
     @GetMapping("/{id}")
@@ -39,16 +41,18 @@ public class FareRuleController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<FareRulesResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestBody FareRulesRequest request) {
-        return ResponseEntity.ok(fareRuleService.updateFareRule(id, request));
+        return ResponseEntity.ok(fareRuleService.updateFareRule(user, id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
-        fareRuleService.deleteFareRule(id);
+        fareRuleService.deleteFareRule(user, id);
         return ResponseEntity.noContent().build();
     }
 }

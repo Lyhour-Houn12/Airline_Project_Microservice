@@ -1,5 +1,7 @@
 package com.jing.flight.service.impl;
 
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.flight.client.AirportZones;
 import com.jing.flight.service.FlightClock;
 import java.time.ZoneId;
@@ -50,17 +52,19 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final FlightRepository flightRepository;
     private final FlightInstanceRepository flightInstanceRepository;
     private final AirportZones airportZones;
+    private final AirlineAccess airlineAccess;
 
 
 
     @Override
     @Transactional
-    public FlightScheduleResponse createSchedule(FlightScheduleRequest request) {
+    public FlightScheduleResponse createSchedule(CurrentUser user, FlightScheduleRequest request) {
         if (request == null)  throw new BadRequestException("Request body is required");
         requireId(request.getFlightId(), "Flight ID");
 
         Flight flight = flightRepository.findById(request.getFlightId())
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "id", request.getFlightId()));
+        airlineAccess.requireCanManage(user, flight.getAirlineId());
 
         FlightSchedule schedule = FlightScheduleMapper.toEntity(request, flight);
         validate(schedule);   // validate before saving, not after
@@ -69,12 +73,14 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public PageResponse<FlightScheduleResponse> getSchedules(Long flightId, Boolean isActive, int page, int size) {
+    public PageResponse<FlightScheduleResponse> getSchedules(CurrentUser user, Long flightId, Boolean isActive, int page, int size) {
+        Long ownAirline = user.isAirlineOwner() ? airlineAccess.ownedAirlineId(user) : null;
         Pageable pageable = PageableFactory.of(page, size, null, null, Set.of("id"), "id", Sort.Direction.DESC);
 
         Specification<FlightSchedule> spec = ((root, query, cb) ->{
             List<Predicate> predicates = new ArrayList<>();
             if (flightId != null) predicates.add(cb.equal(root.get("flight").get("id"), flightId));
+            if (ownAirline != null) predicates.add(cb.equal(root.get("flight").get("airlineId"), ownAirline));
             if(isActive != null) predicates.add(cb.equal(root.get("isActive"), isActive));
             return cb.and(predicates.toArray(new Predicate[0]));
         });
@@ -85,17 +91,17 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public FlightScheduleResponse getScheduleById(Long id) {
+    public FlightScheduleResponse getScheduleById(CurrentUser user, Long id) {
         requireId(id, "Schedule ID");
-        return FlightScheduleMapper.toResponse(findOrThrow(id));
+        return FlightScheduleMapper.toResponse(findManaged(user, id));
     }
 
     @Override
     @Transactional
-    public FlightScheduleResponse updateSchedule(Long id, FlightScheduleRequest request) {
+    public FlightScheduleResponse updateSchedule(CurrentUser user, Long id, FlightScheduleRequest request) {
         requireId(id, "Schedule ID");
         if (request == null) throw new BadRequestException("Request body is required");
-        FlightSchedule existing = findOrThrow(id);
+        FlightSchedule existing = findManaged(user, id);
 
         if(request.getFlightId() != null && !request.getFlightId().equals(existing.getFlight().getId())) {
             throw new BadRequestException("A schedule cannot be moved to a different flight.");
@@ -107,9 +113,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     @Transactional
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(CurrentUser user, Long id) {
         requireId(id, "Schedule ID");
-        FlightSchedule existing = findOrThrow(id);
+        FlightSchedule existing = findManaged(user, id);
         if (flightInstanceRepository.existsByScheduleId(id)) {
             throw new BadRequestException(
                     "This schedule has generated flight instances. Deactivate it instead of deleting it");
@@ -119,14 +125,14 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
     @Override
     @Transactional
-    public GenerateInstancesResponse generateInstances(Long id, GenerateInstancesRequest req) {
+    public GenerateInstancesResponse generateInstances(CurrentUser user, Long id, GenerateInstancesRequest req) {
         requireId(id, "Schedule ID");
         if (req == null) throw new BadRequestException("Request body is required");
         if (req.getTotalSeats() == null || req.getTotalSeats() <= 0)
             throw new BadRequestException("Total seats must be a positive number");
         validateBookingWindow(req.getMinAdvanceBookingDays(), req.getMaxAdvanceBookingDays());
 
-        FlightSchedule schedule = findOrThrow(id);
+        FlightSchedule schedule = findManaged(user, id);
         if (!Boolean.TRUE.equals(schedule.getIsActive()))
             throw new BadRequestException("Cannot generate instances from an inactive schedule");
 
@@ -222,6 +228,13 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
             throw new BadRequestException("End date must not be before start date");
         if (s.getOperatingDays().contains(null))
             throw new BadRequestException("Operating days must not contain null values");
+    }
+
+    /** The schedule, if this user may manage its flight's airline (403 otherwise). */
+    private FlightSchedule findManaged(CurrentUser user, Long id) {
+        FlightSchedule schedule = findOrThrow(id);
+        airlineAccess.requireCanManage(user, schedule.getFlight().getAirlineId());
+        return schedule;
     }
 
     private FlightSchedule findOrThrow(Long id) {

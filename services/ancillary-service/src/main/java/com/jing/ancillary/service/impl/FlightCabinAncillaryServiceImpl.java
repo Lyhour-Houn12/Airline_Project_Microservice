@@ -77,9 +77,7 @@ public class FlightCabinAncillaryServiceImpl implements FlightCabinAncillaryServ
                 }
 
         }
-
-        // TODO: when Feign clients exist, verify the flight instance cabin exists and that
-        // its airline matches the airline of every ancillary.
+        // the cabin's existence and airline are checked by AncillaryOwnership before this runs
 
         List<FlightCabinAncillary> entities = new ArrayList<>();
         for (FlightCabinAncillaryItemRequest item : request.ancillaries()) {

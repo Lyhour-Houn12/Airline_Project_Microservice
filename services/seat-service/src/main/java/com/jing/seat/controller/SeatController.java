@@ -1,5 +1,7 @@
 package com.jing.seat.controller;
 
+import com.jing.seat.service.SeatOwnership;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.dto.seat.SeatBulkRequest;
 import com.jing.common.dto.seat.SeatGenerateRequest;
 import com.jing.common.dto.seat.SeatRequest;
@@ -27,22 +29,26 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class SeatController {
 
     private final SeatService seatService;
+    private final SeatOwnership ownership;
 
     @PostMapping
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> create(@Valid @RequestBody SeatRequest request) {
+    public ResponseEntity<SeatResponse> create(CurrentUser user, @Valid @RequestBody SeatRequest request) {
+        ownership.seatMap(user, request.seatMapId());
         return ResponseEntity.status(HttpStatus.CREATED).body(seatService.createSeat(request));
     }
 
     @PostMapping("/bulk")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<List<SeatResponse>> createBulk(@Valid @RequestBody SeatBulkRequest request) {
+    public ResponseEntity<List<SeatResponse>> createBulk(CurrentUser user, @Valid @RequestBody SeatBulkRequest request) {
+        ownership.seatMap(user, request.seats().getFirst().seatMapId());
         return ResponseEntity.status(HttpStatus.CREATED).body(seatService.createSeats(request));
     }
 
     @PostMapping("/generate")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<List<SeatResponse>> generate(@Valid @RequestBody SeatGenerateRequest request) {
+    public ResponseEntity<List<SeatResponse>> generate(CurrentUser user, @Valid @RequestBody SeatGenerateRequest request) {
+        ownership.seatMap(user, request.seatMapId());
         return ResponseEntity.status(HttpStatus.CREATED).body(seatService.generateSeats(request));
     }
 
@@ -74,38 +80,44 @@ public class SeatController {
 
     @PutMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> update(@PathVariable Long id,
+    public ResponseEntity<SeatResponse> update(CurrentUser user, @PathVariable Long id,
                                                @Valid @RequestBody SeatUpdateRequest request) {
+        ownership.seat(user, id);
         return ResponseEntity.ok(seatService.updateSeat(id, request));
     }
 
     @PatchMapping("/{id}/block")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> block(@PathVariable Long id) {
+    public ResponseEntity<SeatResponse> block(CurrentUser user, @PathVariable Long id) {
+        ownership.seat(user, id);
         return ResponseEntity.ok(seatService.blockSeat(id));
     }
 
     @PatchMapping("/{id}/unblock")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> unblock(@PathVariable Long id) {
+    public ResponseEntity<SeatResponse> unblock(CurrentUser user, @PathVariable Long id) {
+        ownership.seat(user, id);
         return ResponseEntity.ok(seatService.unblockSeat(id));
     }
 
     @PatchMapping("/{id}/activate")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> activate(@PathVariable Long id) {
+    public ResponseEntity<SeatResponse> activate(CurrentUser user, @PathVariable Long id) {
+        ownership.seat(user, id);
         return ResponseEntity.ok(seatService.setActive(id, true));
     }
 
     @PatchMapping("/{id}/deactivate")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatResponse> deactivate(@PathVariable Long id) {
+    public ResponseEntity<SeatResponse> deactivate(CurrentUser user, @PathVariable Long id) {
+        ownership.seat(user, id);
         return ResponseEntity.ok(seatService.setActive(id, false));
     }
 
     @DeleteMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(CurrentUser user, @PathVariable Long id) {
+        ownership.seat(user, id);
         seatService.deleteSeat(id);
         return ResponseEntity.noContent().build();
     }
