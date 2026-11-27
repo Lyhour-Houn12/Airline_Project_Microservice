@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "seat_maps",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_seat_map_seat_number",
-                columnNames = {"seat_map_id", "seat_number"}))
+                name = "uk_seat_map_cabin_class",
+                columnNames = {"cabin_class_id"}))   // one seat map per cabin class
 @Getter
 @Setter
 @AllArgsConstructor
