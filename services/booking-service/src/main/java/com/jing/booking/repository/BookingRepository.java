@@ -29,6 +29,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     @Query("SELECT b FROM Booking b WHERE b.id = :id")
     Optional<Booking> findByIdForUpdate(@Param("id") Long id);
 
+    /** Bookings in the given statuses with a flight on this flight instance (flight cancelled). */
+    @Query("""
+        SELECT DISTINCT s.booking.id FROM BookingSegment s
+        WHERE s.flightInstanceId = :flightInstanceId AND s.booking.status IN :statuses
+        """)
+    List<Long> findIdsOnFlightInstance(@Param("flightInstanceId") Long flightInstanceId,
+                                       @Param("statuses") java.util.Collection<BookingStatus> statuses);
+
     /** Unpaid bookings whose hold window has passed, oldest first (the expiry job). */
     @Query("SELECT b.id FROM Booking b WHERE b.status = :status AND b.expiresAt < :now ORDER BY b.expiresAt")
     List<Long> findIdsToExpire(@Param("status") BookingStatus status, @Param("now") LocalDateTime now,
