@@ -61,6 +61,13 @@ public class BookingPaymentService {
         Booking booking = bookingRepository.findByIdForUpdate(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "id", bookingId));
 
+        if (result.status() == PaymentStatus.REFUNDED) {
+            if (booking.getStatus() == BookingStatus.CANCELLED) {
+                booking.changeStatus(BookingStatus.REFUNDED, "PAYMENT:" + result.paymentId(), "Payment refunded");
+                return response(booking, false, "Booking refunded");
+            }
+            return response(booking, false, "Refund noted; booking stays " + booking.getStatus());
+        }
         if (result.status() != PaymentStatus.SUCCESS) {
             return response(booking, false, "Payment " + result.paymentId() + " is " + result.status()
                     + "; booking unchanged");

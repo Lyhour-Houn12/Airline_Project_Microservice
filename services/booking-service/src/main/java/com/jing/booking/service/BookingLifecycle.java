@@ -21,7 +21,8 @@ import java.util.Set;
  * <pre>
  *   PENDING --paid--> CONFIRMED   seats HELD -> BOOKED, tickets issued
  *   PENDING --------> EXPIRED     seats released (the expiry job)
- *   PENDING/CONFIRMED -> CANCELLED seats released, tickets voided
+ *   PENDING/CONFIRMED -> CANCELLED seats released, tickets voided, paid ones refunded
+ *   CANCELLED -------> REFUNDED   payment-service reports the money is back
  * </pre>
  * Callers must be inside a transaction.
  */
@@ -33,6 +34,7 @@ public class BookingLifecycle {
     private final BookingStateMachine stateMachine;
     private final SeatInventory seatInventory;
     private final TicketService ticketService;
+    private final RefundRequester refundRequester;
 
     /** Confirm a paid booking. {@code paymentId} is null when an admin confirms it by hand. */
     public void confirm(Booking booking, Long paymentId, String changedBy) {
@@ -97,8 +99,9 @@ public class BookingLifecycle {
         }
         if (before == BookingStatus.CONFIRMED) {
             int voided = ticketService.voidIssuedTickets(booking);
-            // TODO (payment-service): start the refund of booking.getPaymentId() according to the fare rules
-            log.info("Booking {} cancelled after payment: {} ticket(s) voided, refund of payment {} needed",
+            // TODO: apply the fare rules (cancellation fee, non-refundable fares); for now it's a full refund
+            refundRequester.requestAfterCommit(booking, reason);
+            log.info("Booking {} cancelled after payment: {} ticket(s) voided, refund of payment {} requested",
                     booking.getBookingReference(), voided, booking.getPaymentId());
         }
     }

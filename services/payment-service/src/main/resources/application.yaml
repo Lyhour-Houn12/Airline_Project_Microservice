@@ -24,3 +24,7 @@ payment:
     api-key: ${ABA_API_KEY}
     return-url: ${ABA_RETURN_URL:}      # public URL of the callback endpoint (ngrok for local)
     continue-success-url: ${ABA_CONTINUE_SUCCESS_URL:}
+    rsa-public-key: ${ABA_RSA_PUBLIC_KEY:}        # Refund API key from ABA; empty = refunds wait
+    qr-image-template: ${ABA_QR_TEMPLATE:template3_color}
+  reconcile-every-millis: 60000   # check PENDING payments with PayWay (missed callbacks, expiry)
+  refund-retry-millis: 300000     # retry refunds that are still REQUESTED

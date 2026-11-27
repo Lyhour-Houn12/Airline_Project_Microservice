@@ -26,7 +26,8 @@ class BookingLifecycleTest {
 
     private final SeatInventory seats = mock(SeatInventory.class);
     private final TicketService tickets = mock(TicketService.class);
-    private final BookingLifecycle lifecycle = new BookingLifecycle(new BookingStateMachine(), seats, tickets);
+    private final RefundRequester refunds = mock(RefundRequester.class);
+    private final BookingLifecycle lifecycle = new BookingLifecycle(new BookingStateMachine(), seats, tickets, refunds);
 
     private Booking booking;
     private PassengerSegment seated;    // holds seat 501
@@ -106,6 +107,14 @@ class BookingLifecycleTest {
 
         verify(tickets).voidIssuedTickets(booking);
         verify(seats).releaseAllAfterCommit(booking);
+        verify(refunds).requestAfterCommit(booking, "Plans changed");
+    }
+
+    @Test
+    void expiringAnUnpaidBookingRequestsNoRefund() {
+        lifecycle.close(booking, BookingStatus.EXPIRED, "SYSTEM", "Not paid in time");
+
+        verifyNoInteractions(refunds);
     }
 
     @Test

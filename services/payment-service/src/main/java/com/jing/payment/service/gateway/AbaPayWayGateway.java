@@ -2,6 +2,7 @@ package com.jing.payment.service.gateway;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jing.common.exception.BadRequestException;
 import com.jing.payment.config.AbaProperties;
 import com.jing.payment.model.Payment;
 import com.jing.payment.payload.request.AbaCheckout;
@@ -19,6 +20,7 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +72,58 @@ public class AbaPayWayGateway {
         return new AbaCheckout(props.baseUrl() + PURCHASE_PATH, out);
     }
 
+
+    /** QR payment options and the currencies PayWay accepts for each. */
+    private static final Map<String, Set<String>> QR_OPTIONS = Map.of(
+            "abapay_khqr", Set.of("USD", "KHR"),
+            "wechat", Set.of("USD"),
+            "alipay", Set.of("USD"));
+
+    /**
+     * Fields of the QR API in PayWay's hash order: req_time, merchant_id, tran_id, amount, items,
+     * first_name, last_name, email, phone, purchase_type, payment_option, callback_url,
+     * return_deeplink, currency, custom_fields, return_params, payout, lifetime, qr_image_template.
+     * Unused optional fields stay empty, so they add nothing to the hash string.
+     */
+    public Map<String, String> buildQrFields(Payment p, CreatePaymentRequest r, int lifetimeMinutes) {
+        String option = qrOption(r.paymentOption(), p.getCurrency());
+        String amount = AbaHashUtil.formatAmount(p.getAmount(), p.getCurrency());
+
+        Map<String, String> f = new LinkedHashMap<>();
+        f.put("req_time", AbaPayWayClient.now());
+        f.put("merchant_id", props.merchantId());
+        f.put("tran_id", p.getTranId());
+        f.put("amount", amount);
+        f.put("items", buildItems(p, amount));
+        f.put("first_name", clean(r.firstName(), 20));
+        f.put("last_name", clean(r.lastName(), 20));
+        f.put("email", r.email() == null ? "" : r.email());
+        f.put("phone", cleanPhone(r.phone()));
+        f.put("purchase_type", "purchase");
+        f.put("payment_option", option);
+        f.put("callback_url", props.returnUrl() == null || props.returnUrl().isBlank() ? "" : b64(props.returnUrl()));
+        f.put("return_deeplink", "");
+        f.put("currency", p.getCurrency());
+        f.put("custom_fields", "");
+        f.put("return_params", String.valueOf(p.getId() != null ? p.getId() : p.getTranId()));
+        f.put("payout", "");
+        f.put("lifetime", String.valueOf(lifetimeMinutes));
+        f.put("qr_image_template", props.qrImageTemplate());
+        return f;
+    }
+
+    /** Default ABA Pay / KHQR; WeChat and Alipay only in USD. */
+    public static String qrOption(String requested, String currency) {
+        String option = requested == null || requested.isBlank() ? "abapay_khqr" : requested.trim().toLowerCase();
+        Set<String> currencies = QR_OPTIONS.get(option);
+        if (currencies == null) {
+            throw new BadRequestException("paymentOption for QR must be one of " + QR_OPTIONS.keySet());
+        }
+        if (!currencies.contains(currency)) {
+            throw new BadRequestException(option + " QR payments are only possible in " + currencies);
+        }
+        return option;
+    }
 
     private String buildItems(Payment p, String amount) {
         var items = List.of(Map.of("name", "Flight booking " + p.getBookingReference(),
