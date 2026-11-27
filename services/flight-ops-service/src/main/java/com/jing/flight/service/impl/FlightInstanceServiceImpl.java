@@ -1,5 +1,7 @@
 package com.jing.flight.service.impl;
 
+import com.jing.flight.repository.FlightScheduleRepository;
+import com.jing.flight.model.FlightSchedule;
 import com.jing.flight.outbox.Outbox;
 import com.jing.flight.service.messaging.FlightCancelledHandler;
 import com.jing.common.airline.AirlineAccess;
@@ -44,6 +46,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     private final FlightInstanceRepository flightInstanceRepository;
     private final FlightRepository flightRepository;
+    private final FlightScheduleRepository flightScheduleRepository;
     private final AirportZones airportZones;
     private final AirlineAccess airlineAccess;
     private final Outbox outbox;
@@ -68,7 +71,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         instance.setAirlineId(flight.getAirlineId());
 
         requireId(instance.getAirlineId(), "Airline ID");
-        requireId(instance.getScheduleId(), "Schedule ID");
+        requireScheduleOf(flight, instance.getScheduleId());   // optional: none = a one-off flight
         validateRoute(instance.getDepartureAirportId(), instance.getArrivalAirportId());
         applyTimeZones(instance);
         validateState(instance);
@@ -84,6 +87,19 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         return toResponse(saved);
     }
 
+
+    /** A schedule given with a new instance must exist and belong to the same flight. */
+    private void requireScheduleOf(Flight flight, Long scheduleId) {
+        if (scheduleId == null) {
+            return;
+        }
+        FlightSchedule schedule = flightScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Flight schedule", "id", scheduleId));
+        if (!schedule.getFlight().getId().equals(flight.getId())) {
+            throw new BadRequestException("Schedule " + scheduleId + " belongs to flight "
+                    + schedule.getFlight().getFlightNumber() + ", not " + flight.getFlightNumber());
+        }
+    }
 
     @Override
     public PageResponse<FlightInstanceResponse> getFlightInstances(FlightInstanceFilter filter,

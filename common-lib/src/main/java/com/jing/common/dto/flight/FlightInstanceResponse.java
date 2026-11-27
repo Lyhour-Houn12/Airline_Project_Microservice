@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 public class FlightInstanceResponse {
     private Long id;
     private Long flightId;
+    private Long scheduleId;            // null = a one-off flight, not from a schedule
     private String flightNumber;
 
     private Long airlineId;
