@@ -82,6 +82,7 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
         booking.addSegment(segment);
         passengerValidator.revalidateForTrip(booking);   // the trip's dates changed: ages / passports still OK?
         booking.getPassengers().forEach(p -> fareCalculator.price(booking.link(p, segment)));
+        seatInventory.reservePlaces(booking, segment);   // 409 if the cabin is full
         booking.recalculateTotal();
         bookingRepository.flush();
         return BookingSegmentMapper.toResponse(segment);
@@ -122,6 +123,7 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
 
         List<Long> seats = segment.getPassengerSegments().stream()
                 .map(PassengerSegment::getSeatInstanceId).filter(Objects::nonNull).toList();
+        seatInventory.releasePlaces(booking, segment, 0);
         booking.removeSegment(segment);
         bookingRepository.flush();          // delete first, so renumbering can't hit the unique constraint
         renumber(booking);

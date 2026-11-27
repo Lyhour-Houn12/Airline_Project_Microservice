@@ -6,6 +6,7 @@ import com.jing.booking.model.PassengerSegment;
 import com.jing.booking.outbox.OutboxHandler;
 import com.jing.booking.outbox.OutboxMessage;
 import com.jing.booking.repository.BookingRepository;
+import com.jing.common.dto.seat.CabinConfirmRequest;
 import com.jing.common.dto.seat.SeatConfirmRequest;
 import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.enumeration.BookingStatus;
@@ -51,6 +52,12 @@ public class SeatConfirmHandler implements OutboxHandler {
         if (booking == null || booking.getStatus() != BookingStatus.CONFIRMED) {
             return;   // deleted or cancelled meanwhile: cancelling already released its seats
         }
+        // 1. the places in each cabin (every passenger who needs one)
+        client.confirmCabins(new CabinConfirmRequest(booking.getBookingReference(), booking.getSegments().stream()
+                .map(s -> new CabinConfirmRequest.Item(s.getFlightInstanceId(), s.getCabinClassId(), s.placesNeeded()))
+                .toList()));   // throws -> retried
+
+        // 2. the seats passengers picked
         List<PassengerSegment> held = booking.passengerSegments()
                 .filter(ps -> ps.getStatus() == PassengerSegmentStatus.SEAT_HELD && ps.getSeatInstanceId() != null)
                 .toList();

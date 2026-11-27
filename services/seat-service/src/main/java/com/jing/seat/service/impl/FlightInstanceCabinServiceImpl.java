@@ -138,8 +138,9 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceCabinServic
                 throw new BadRequestException("totalSeats " + request.totalSeats() + " exceeds the "
                         + usable + " usable seats of this cabin class");
             }
-            if (request.totalSeats() < cabin.getBookedSeats()) {
-                throw new BadRequestException("totalSeats cannot be lower than the " + cabin.getBookedSeats()
+            int taken = cabin.getBookedSeats() + cabin.getHeldSeats();
+            if (request.totalSeats() < taken) {
+                throw new BadRequestException("totalSeats cannot be lower than the " + taken
                         + " seats already booked");
             }
             cabin.setTotalSeats(request.totalSeats());
@@ -158,8 +159,9 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceCabinServic
     @Override
     public void delete(Long id) {
         FlightInstanceCabin cabin = get(id);
-        if (cabin.getBookedSeats() > 0){
-            throw new BadRequestException("Cannot delete a cabin with " + cabin.getBookedSeats() + " booked seats");
+        if (cabin.getBookedSeats() + cabin.getHeldSeats() > 0){
+            throw new BadRequestException("Cannot delete a cabin with " + (cabin.getBookedSeats() + cabin.getHeldSeats())
+                    + " booked or held places");
         }
         cabinRepository.delete(cabin);
 

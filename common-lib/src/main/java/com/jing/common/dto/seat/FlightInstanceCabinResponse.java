@@ -14,6 +14,7 @@ public record FlightInstanceCabinResponse(
         Long aircraftId,
         Integer totalSeats,
         Integer bookedSeats,
+        Integer heldSeats,          // places held by unpaid bookings
         Integer availableSeats,
         Boolean isBookable,
         LocalDateTime createdAt,

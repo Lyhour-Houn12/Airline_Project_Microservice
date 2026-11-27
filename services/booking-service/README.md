@@ -26,6 +26,16 @@ Port 8066, database `booking_db`. Owns bookings (PNR), their flights, passengers
 
 All status changes with side effects live in `service/BookingLifecycle`.
 
+## Capacity (no overselling)
+
+Every passenger who needs a seat (adults and children, not infants on a lap) takes a **place** in the
+cabin as soon as they're in the booking, seat picked or not: a `CabinReservation` in seat-service, set
+under a row lock on the cabin, so two bookings can't take the last place. A full cabin answers **409**.
+Places are held until the booking expires, become booked when it's paid (even if the hold lapsed:
+a paid passenger keeps their place; overbooking is logged), and are given back on cancel / expiry.
+Lapsed holds of abandoned bookings are freed the next time someone reserves in that cabin.
+A flight can only be sold once its airline has set up the cabin (`/api/v1/flight-instance-cabins`).
+
 ## Messages to other services (outbox)
 
 Seat release, seat booking (after payment) and refund requests are **outbox messages**: saved in the
@@ -52,5 +62,4 @@ booking:
 
 - Refunds: a cancelled paid booking (or a payment that arrived after expiry) is logged as "refund required".
 - Meals and ancillaries (`BookingItem` exists, no endpoints yet).
-- Flight capacity: without a seat assigned, nothing stops selling more passengers than the cabin holds.
 - An owner of the airline can't see bookings on their flights yet (`AccessGuard.canViewBooking`).

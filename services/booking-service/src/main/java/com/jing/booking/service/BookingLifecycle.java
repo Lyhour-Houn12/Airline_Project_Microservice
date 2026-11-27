@@ -1,14 +1,12 @@
 package com.jing.booking.service;
 
 import com.jing.booking.model.Booking;
-import com.jing.booking.model.PassengerSegment;
 import com.jing.common.enumeration.BookingStatus;
 import com.jing.common.enumeration.PassengerSegmentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 
 /**
  * The status changes that have side effects in other services, in one place:
@@ -48,11 +46,8 @@ public class BookingLifecycle {
      * stays confirmed. Safe to call again.
      */
     public void confirmHeldSeats(Booking booking) {
-        boolean anyHeld = booking.passengerSegments()
-                .anyMatch(ps -> ps.getStatus() == PassengerSegmentStatus.SEAT_HELD && ps.getSeatInstanceId() != null);
-        if (anyHeld) {
-            seatInventory.confirmAfterCommit(booking);
-        }
+        // always: the cabin places of every passenger are booked, seats picked or not
+        seatInventory.confirmAfterCommit(booking);
     }
 
     /** CANCELLED or EXPIRED: give every seat back and void unused tickets. */
@@ -64,10 +59,9 @@ public class BookingLifecycle {
         stateMachine.assertTransition(before, target);
         booking.changeStatus(target, changedBy, reason);
 
-        boolean hadSeats = booking.passengerSegments().map(PassengerSegment::getSeatInstanceId).anyMatch(Objects::nonNull);
         booking.passengerSegments().forEach(ps -> ps.setStatus(PassengerSegmentStatus.CANCELLED));
-        if (hadSeats) {
-            seatInventory.releaseAllAfterCommit(booking);
+        if (!booking.getSegments().isEmpty()) {
+            seatInventory.releaseAllAfterCommit(booking);   // seats and cabin places
         }
         if (before == BookingStatus.CONFIRMED) {
             int voided = ticketService.voidIssuedTickets(booking);

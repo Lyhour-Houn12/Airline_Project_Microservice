@@ -24,7 +24,7 @@ public class FlightInstanceCabinMapper {
                 c.getId(), c.getFlightInstanceId(),
                 cabin.getId(), cabin.getName(), cabin.getCode(), cabin.getCabinClassType(),
                 cabin.getAircraftId(),
-                c.getTotalSeats(), c.getBookedSeats(), c.getAvailableSeats(),
+                c.getTotalSeats(), c.getBookedSeats(), c.getHeldSeats(), c.getAvailableSeats(),
                 c.getIsBookable(), c.getCreatedAt(), c.getUpdatedAt());
     }
 }

@@ -5,7 +5,6 @@ import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.dto.seat.SeatHoldRequest;
 import com.jing.common.dto.seat.SeatInstanceResponse;
 import com.jing.common.dto.seat.SeatReleaseRequest;
-import com.jing.common.enumeration.SeatAvailabilityStatus;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -31,6 +30,7 @@ import java.util.Set;
 public class SeatHoldServiceImpl implements SeatHoldService {
 
     private final SeatInstanceRepository seatInstanceRepository;
+    private final com.jing.seat.service.CabinReservationService cabinReservations;
 
     @Override
     public SeatInstanceResponse hold(Long seatInstanceId, SeatHoldRequest request) {
@@ -67,13 +67,9 @@ public class SeatHoldServiceImpl implements SeatHoldService {
         List<Long> rejected = new ArrayList<>();
 
         for (SeatInstance si : seatInstanceRepository.findAllById(wanted)) {
-            boolean wasHeld = si.isHeldBy(request.holdReference());
+            // cabin counts are kept by CabinReservationService (every passenger, seat or not)
             if (si.confirm(request.holdReference())) {
                 confirmed.add(si.getId());
-                if (wasHeld) {
-                    FlightInstanceCabin cabin = si.getFlightInstanceCabin();
-                    cabin.setBookedSeats(cabin.getBookedSeats() + 1);
-                }
             } else {
                 rejected.add(si.getId());
             }
@@ -96,13 +92,12 @@ public class SeatHoldServiceImpl implements SeatHoldService {
         int released = 0;
         for (SeatInstance si : seats) {
             if (only != null && !only.contains(si.getId())) continue;
-            SeatAvailabilityStatus before = si.release(request.holdReference());
-            if (before == null) continue;
-            released++;
-            if (before == SeatAvailabilityStatus.BOOKED) {
-                FlightInstanceCabin cabin = si.getFlightInstanceCabin();
-                cabin.setBookedSeats(Math.max(0, cabin.getBookedSeats() - 1));
-            }
+            if (si.release(request.holdReference()) != null) released++;
+        }
+        if (only == null) {
+            // the whole booking goes (cancelled / expired): its places in the cabins go too
+            int places = cabinReservations.releaseAll(request.holdReference());
+            if (places > 0) log.info("Released {} cabin place(s) of booking {}", places, request.holdReference());
         }
         log.info("Released {} seat(s) of booking {}", released, request.holdReference());
         return released;

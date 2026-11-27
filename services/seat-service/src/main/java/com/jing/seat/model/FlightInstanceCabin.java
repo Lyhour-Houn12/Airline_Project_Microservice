@@ -34,9 +34,15 @@ public class FlightInstanceCabin {
     @Column(name = "total_seats", nullable = false)
     private Integer totalSeats;
 
+    // Places of PAID bookings (CabinReservation BOOKED).
     @Builder.Default
     @Column(name = "booked_seats", nullable = false)
     private Integer bookedSeats = 0;
+
+    // Places of UNPAID bookings (CabinReservation HELD). Nullable column so existing rows get added.
+    @Builder.Default
+    @Column(name = "held_seats")
+    private Integer heldSeats = 0;
 
     @Builder.Default
     @Column(name = "is_bookable", nullable = false)
@@ -53,7 +59,29 @@ public class FlightInstanceCabin {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public int getHeldSeats() {
+        return heldSeats != null ? heldSeats : 0;
+    }
+
+    /** Free places: neither paid for nor held by an unpaid booking. Can be negative if overbooked. */
     public int getAvailableSeats() {
-        return totalSeats - bookedSeats;
+        return totalSeats - bookedSeats - getHeldSeats();
+    }
+
+    // ------------------------------------------------------------ capacity bookkeeping
+
+    /** An unpaid booking's places change by {@code delta} (negative = given back). */
+    public void changeHeld(int delta) {
+        heldSeats = Math.max(0, getHeldSeats() + delta);
+    }
+
+    /** {@code seats} held places of a booking were paid for. */
+    public void heldToBooked(int seats) {
+        changeHeld(-seats);
+        bookedSeats = bookedSeats + seats;
+    }
+
+    public void changeBooked(int delta) {
+        bookedSeats = Math.max(0, bookedSeats + delta);
     }
 }

@@ -56,6 +56,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         booking.addPassenger(passenger);
         booking.getSegments().forEach(s -> fareCalculator.price(booking.link(passenger, s)));
+        seatInventory.reservePlacesForAll(booking);   // 409 if a cabin is full
         booking.recalculateTotal();
 
         // flush, not saveAndFlush: the booking is already managed, and save() would merge it,
@@ -91,6 +92,7 @@ public class PassengerServiceImpl implements PassengerService {
         PassengerMapper.apply(passenger, request, adultAccompanying);
         // the passenger type may have changed (adult <-> child): price every flight again
         passenger.getPassengerSegments().forEach(fareCalculator::price);
+        seatInventory.reservePlacesForAll(booking);   // an infant who becomes a child needs a place
         booking.recalculateTotal();
 
         bookingRepository.flush();
@@ -109,6 +111,7 @@ public class PassengerServiceImpl implements PassengerService {
         List<Long> seats = passenger.getPassengerSegments().stream()
                 .map(PassengerSegment::getSeatInstanceId).filter(Objects::nonNull).toList();
         booking.removePassenger(passenger);
+        booking.getSegments().forEach(seg -> seatInventory.releasePlaces(booking, seg, seg.placesNeeded()));
         booking.recalculateTotal();
         bookingRepository.flush();
         seatInventory.releaseAfterCommit(booking, seats);

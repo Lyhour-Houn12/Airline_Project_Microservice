@@ -1,5 +1,8 @@
 package com.jing.booking.client;
 
+import com.jing.common.dto.seat.CabinConfirmRequest;
+import com.jing.common.dto.seat.CabinReservationRequest;
+import com.jing.common.dto.seat.CabinReservationResponse;
 import com.jing.common.dto.seat.SeatConfirmRequest;
 import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.dto.seat.SeatHoldRequest;
@@ -24,4 +27,10 @@ public interface SeatInventoryClient {
 
     @PostMapping("/internal/v1/seat-instances/release")
     Map<String, Integer> release(@RequestBody SeatReleaseRequest request);
+
+    @PostMapping("/internal/v1/seat-instances/cabin-reservations")
+    CabinReservationResponse reserveCabin(@RequestBody CabinReservationRequest request);
+
+    @PostMapping("/internal/v1/seat-instances/cabin-reservations/confirm")
+    void confirmCabins(@RequestBody CabinConfirmRequest request);
 }

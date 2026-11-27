@@ -63,13 +63,13 @@ class BookingLifecycleTest {
     }
 
     @Test
-    void noSeatMessageWhenNobodyPickedASeat() {
+    void cabinPlacesAreBookedEvenWhenNobodyPickedASeat() {
         seated.setSeatInstanceId(null);
         seated.setStatus(PassengerSegmentStatus.NOT_SEATED);
 
         lifecycle.confirm(booking, 77L, "PAYMENT:77");
 
-        verify(seats, never()).confirmAfterCommit(any());
+        verify(seats).confirmAfterCommit(booking);   // every passenger's place in the cabin
     }
 
     @Test
