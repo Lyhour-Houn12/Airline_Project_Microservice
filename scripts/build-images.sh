@@ -10,9 +10,8 @@
 #                                                            build, then `docker push` each image (needs `docker login`)
 #   scripts/build-images.sh -p --push booking-service        flags and service names combine freely
 #
-# Images: <prefix>/<service>:<version> and :latest. The prefix is <docker.image.prefix> in the root
-# pom.xml ("airline"), or IMAGE_PREFIX. The CPU type is your machine's (arm64 on Apple Silicon);
-# JIB_ARCH=amd64 builds for ordinary servers instead.
+# Images: <prefix>/<service>:latest. The prefix is <docker.image.prefix> in the root pom.xml
+# ("lyhour121"), or IMAGE_PREFIX. The CPU type is arm64; JIB_ARCH=amd64 builds for ordinary servers.
 #
 # Works with the Bash 3.2 that ships with macOS.
 

@@ -29,7 +29,7 @@ services:
       service: network-deploy-service
 
   discovery-server:
-    image: airline/discovery-server:latest
+    image: lyhour121/discovery-server:latest
     environment:
       SPRING_CLOUD_CONFIG_ENABLED: "false"
     ports:
@@ -45,7 +45,7 @@ services:
       service: network-deploy-service
 
   api-gateway:
-    image: airline/api-gateway:latest
+    image: lyhour121/api-gateway:latest
     ports:
       - "8080:8080"
     env_file: [{ path: ../cloud/api-gateway/.env, required: false }]
@@ -57,7 +57,7 @@ services:
   # and blocks /internal/**, like in production.
 
   user-service:
-    image: airline/user-service:latest
+    image: lyhour121/user-service:latest
     env_file: [{ path: ../services/user-service/.env, required: false }]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_db
@@ -66,7 +66,7 @@ services:
       service: microservice-db-config
 
   airline-core-service:
-    image: airline/airline-core-service:latest
+    image: lyhour121/airline-core-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/airline_core_db
     extends:
@@ -74,7 +74,7 @@ services:
       service: microservice-db-config
 
   location-service:
-    image: airline/location-service:latest
+    image: lyhour121/location-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/location_service
     extends:
@@ -82,7 +82,7 @@ services:
       service: microservice-db-config
 
   flight-ops-service:
-    image: airline/flight-ops-service:latest
+    image: lyhour121/flight-ops-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flight_ops_db
     extends:
@@ -90,7 +90,7 @@ services:
       service: microservice-db-config
 
   pricing-service:
-    image: airline/pricing-service:latest
+    image: lyhour121/pricing-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pricing_db
     extends:
@@ -98,7 +98,7 @@ services:
       service: microservice-db-config
 
   seat-service:
-    image: airline/seat-service:latest
+    image: lyhour121/seat-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/seat_db
     extends:
@@ -106,7 +106,7 @@ services:
       service: microservice-db-config
 
   ancillary-service:
-    image: airline/ancillary-service:latest
+    image: lyhour121/ancillary-service:latest
     env_file: [{ path: ../services/ancillary-service/.env, required: false }]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ancillary_db
@@ -115,7 +115,7 @@ services:
       service: microservice-db-config
 
   booking-service:
-    image: airline/booking-service:latest
+    image: lyhour121/booking-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/booking_db
     extends:
@@ -123,7 +123,7 @@ services:
       service: microservice-db-config
 
   payment-service:
-    image: airline/payment-service:latest
+    image: lyhour121/payment-service:latest
     env_file: [{ path: ../services/payment-service/.env, required: false }]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/payment_db
