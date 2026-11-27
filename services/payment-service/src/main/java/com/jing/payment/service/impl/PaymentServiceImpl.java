@@ -185,7 +185,7 @@ public class PaymentServiceImpl implements PaymentService {
             return;
         }
         logAttempt(p.getId(), "CALLBACK", rawBody);
-        if (p.getStatus() == PaymentStatus.SUCCESS) return;                  // retry, already handled
+            if (p.getStatus() == PaymentStatus.SUCCESS) return;                  // retry, already handled
         if (!"0".equals(body.path("status").asText())) {
             log.warn("PayWay callback for {} has non-success status {}", tranId, body.path("status").asText());
             return;

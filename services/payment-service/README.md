@@ -30,8 +30,10 @@ While the customer pays, poll `GET /api/v1/payments/{id}` (or `POST /api/v1/paym
    **never trusted**: it only triggers a server-to-server `check-transaction`.
 2. **Reconciliation job** (every `payment.reconcile-every-millis`, 1 min): PENDING payments older than a
    minute are checked with PayWay. Paid ones become SUCCESS; unpaid ones EXPIRE after their window.
-3. On SUCCESS booking-service is told (`/internal/v1/bookings/{id}/payment-result`): the booking is
-   confirmed, seats booked, tickets issued. If the booking can no longer be confirmed (expired, cancelled,
+3. On SUCCESS booking-service is told (`/internal/v1/bookings/{id}/payment-result`) through the
+   **outbox**: the message is saved with the payment itself and retried until booking-service accepts it,
+   so a booking-service outage only delays the confirmation. The booking is confirmed, seats booked,
+   tickets issued. If the booking can no longer be confirmed (expired, cancelled,
    already paid), this payment is **refunded automatically**.
 
 ## Refunds

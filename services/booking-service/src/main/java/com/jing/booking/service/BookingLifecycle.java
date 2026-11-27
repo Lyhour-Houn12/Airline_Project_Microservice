@@ -2,18 +2,13 @@ package com.jing.booking.service;
 
 import com.jing.booking.model.Booking;
 import com.jing.booking.model.PassengerSegment;
-import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.enumeration.BookingStatus;
 import com.jing.common.enumeration.PassengerSegmentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * The status changes that have side effects in other services, in one place:
@@ -48,38 +43,15 @@ public class BookingLifecycle {
     }
 
     /**
-     * Book every seat this booking still holds. Seats whose hold was lost are cleared: the booking
-     * stays confirmed and the passenger can pick a seat later (check-in). Safe to call again.
+     * Book every seat this booking still holds. Sent through the outbox (see SeatConfirmHandler), so
+     * a seat-service outage only delays it. Seats whose hold was lost are cleared there; the booking
+     * stays confirmed. Safe to call again.
      */
     public void confirmHeldSeats(Booking booking) {
-        List<PassengerSegment> held = booking.passengerSegments()
-                .filter(ps -> ps.getStatus() == PassengerSegmentStatus.SEAT_HELD && ps.getSeatInstanceId() != null)
-                .toList();
-        if (held.isEmpty()) return;
-
-        SeatConfirmResponse result;
-        try {
-            result = seatInventory.confirm(booking, held.stream().map(PassengerSegment::getSeatInstanceId).toList());
-        } catch (RuntimeException e) {
-            // the booking is paid: never fail the confirmation because seat-service is down.
-            // The seats stay SEAT_HELD; the next payment-result call (or an admin) retries.
-            log.error("Booking {} is paid but its seats could not be confirmed: {}",
-                    booking.getBookingReference(), e.getMessage());
-            return;
-        }
-        Set<Long> confirmed = new HashSet<>(result.confirmed());
-        for (PassengerSegment ps : held) {
-            if (confirmed.contains(ps.getSeatInstanceId())) {
-                ps.setStatus(PassengerSegmentStatus.SEATED);
-            } else {
-                ps.setSeatInstanceId(null);
-                ps.setSeatSurcharge(BigDecimal.ZERO);
-                ps.setStatus(PassengerSegmentStatus.NOT_SEATED);
-            }
-        }
-        if (!result.rejected().isEmpty()) {
-            log.warn("Booking {} lost {} seat(s) before payment; passengers must pick new seats",
-                    booking.getBookingReference(), result.rejected().size());
+        boolean anyHeld = booking.passengerSegments()
+                .anyMatch(ps -> ps.getStatus() == PassengerSegmentStatus.SEAT_HELD && ps.getSeatInstanceId() != null);
+        if (anyHeld) {
+            seatInventory.confirmAfterCommit(booking);
         }
     }
 

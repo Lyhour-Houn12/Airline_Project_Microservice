@@ -28,3 +28,6 @@ payment:
     qr-image-template: ${ABA_QR_TEMPLATE:template3_color}
   reconcile-every-millis: 60000   # check PENDING payments with PayWay (missed callbacks, expiry)
   refund-retry-millis: 300000     # retry refunds that are still REQUESTED
+
+outbox:
+  poll-millis: 5000   # how often undelivered messages to other services are retried

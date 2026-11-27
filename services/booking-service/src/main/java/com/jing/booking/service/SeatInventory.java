@@ -3,16 +3,13 @@ package com.jing.booking.service;
 import com.jing.booking.client.SeatInventoryClient;
 import com.jing.booking.model.Booking;
 import com.jing.booking.model.BookingSegment;
-import com.jing.common.dto.seat.SeatConfirmRequest;
-import com.jing.common.dto.seat.SeatConfirmResponse;
+import com.jing.booking.outbox.Outbox;
+import com.jing.booking.service.messaging.SeatConfirmHandler;
+import com.jing.booking.service.messaging.SeatReleaseHandler;
 import com.jing.common.dto.seat.SeatHoldRequest;
 import com.jing.common.dto.seat.SeatInstanceResponse;
-import com.jing.common.dto.seat.SeatReleaseRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 
@@ -21,17 +18,17 @@ import java.util.List;
  *
  * <ul>
  *   <li>{@link #hold} is synchronous: the customer needs to know right away if the seat is gone (409).</li>
- *   <li>Releases run only after the booking change has committed, so a rolled-back change never
- *       gives away a seat the booking still points to. They are best effort: if seat-service is down
- *       a HELD seat frees itself when its hold lapses, a BOOKED seat is logged for manual release.</li>
+ *   <li>Releasing and booking seats are outbox messages, saved with the booking change itself and
+ *       delivered after it commits, retried until seat-service accepts them. So a rolled-back change never
+ *       gives a seat away, and a seat-service outage never leaves a seat stuck.</li>
  * </ul>
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SeatInventory {
 
     private final SeatInventoryClient client;
+    private final Outbox outbox;
 
     public SeatInstanceResponse hold(Booking booking, BookingSegment segment, Long seatInstanceId) {
         return client.hold(seatInstanceId, new SeatHoldRequest(
@@ -41,39 +38,21 @@ public class SeatInventory {
                 booking.getExpiresAt()));
     }
 
-    public SeatConfirmResponse confirm(Booking booking, List<Long> seatInstanceIds) {
-        return client.confirm(new SeatConfirmRequest(booking.getBookingReference(), seatInstanceIds));
+    /** Book every seat the booking holds (after it's paid). */
+    public void confirmAfterCommit(Booking booking) {
+        outbox.enqueue(SeatConfirmHandler.TYPE, booking.getId(), new SeatConfirmHandler.Payload(booking.getId()));
     }
 
     /** Release the given seats of this booking once the current transaction commits. */
     public void releaseAfterCommit(Booking booking, List<Long> seatInstanceIds) {
         if (seatInstanceIds.isEmpty()) return;
-        afterCommit(booking.getBookingReference(), List.copyOf(seatInstanceIds));
+        outbox.enqueue(SeatReleaseHandler.TYPE, booking.getId(),
+                new SeatReleaseHandler.Payload(booking.getBookingReference(), List.copyOf(seatInstanceIds)));
     }
 
     /** Release every seat of this booking once the current transaction commits. */
     public void releaseAllAfterCommit(Booking booking) {
-        afterCommit(booking.getBookingReference(), null);
-    }
-
-    private void afterCommit(String reference, List<Long> ids) {
-        Runnable release = () -> {
-            try {
-                client.release(new SeatReleaseRequest(reference, ids));
-            } catch (RuntimeException e) {
-                log.error("Could not release seats {} of booking {}: {}",
-                        ids == null ? "(all)" : ids, reference, e.getMessage());
-            }
-        };
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    release.run();
-                }
-            });
-        } else {
-            release.run();
-        }
+        outbox.enqueue(SeatReleaseHandler.TYPE, booking.getId(),
+                new SeatReleaseHandler.Payload(booking.getBookingReference(), null));
     }
 }

@@ -19,3 +19,6 @@ booking:
   child-fare-percent: 100     # share of the adult fare a CHILD pays
   infant-fare-percent: 10     # share of the adult fare an INFANT (on a lap, no seat) pays
   expiry-check-millis: 60000  # how often unpaid bookings are expired
+
+outbox:
+  poll-millis: 5000   # how often undelivered messages to other services are retried

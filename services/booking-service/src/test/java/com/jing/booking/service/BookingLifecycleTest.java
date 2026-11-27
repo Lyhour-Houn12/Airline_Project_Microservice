@@ -4,7 +4,6 @@ import com.jing.booking.model.Booking;
 import com.jing.booking.model.BookingSegment;
 import com.jing.booking.model.Passenger;
 import com.jing.booking.model.PassengerSegment;
-import com.jing.common.dto.seat.SeatConfirmResponse;
 import com.jing.common.enumeration.BookingStatus;
 import com.jing.common.enumeration.PassengerSegmentStatus;
 import com.jing.common.enumeration.PassengerType;
@@ -13,13 +12,10 @@ import com.jing.common.exception.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 class BookingLifecycleTest {
@@ -52,41 +48,28 @@ class BookingLifecycleTest {
         return ps;
     }
 
-    @Test
-    void paymentConfirmsBookingSeatsAndTickets() {
-        when(seats.confirm(any(), anyList())).thenReturn(new SeatConfirmResponse(List.of(501L), List.of()));
 
+
+
+    @Test
+    void paymentConfirmsBookingAndQueuesTheSeatsAndTickets() {
         lifecycle.confirm(booking, 77L, "PAYMENT:77");
 
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.CONFIRMED);
         assertThat(booking.getPaymentId()).isEqualTo(77L);
-        assertThat(seated.getStatus()).isEqualTo(PassengerSegmentStatus.SEATED);
-        assertThat(unseated.getStatus()).isEqualTo(PassengerSegmentStatus.NOT_SEATED);
-        verify(seats).confirm(booking, List.of(501L));
+        assertThat(booking.getExpiresAt()).isNull();
+        verify(seats).confirmAfterCommit(booking);          // booked by the outbox after commit
         verify(tickets).issueTickets(booking);
     }
 
     @Test
-    void aLostSeatIsClearedButTheBookingIsStillConfirmed() {
-        seated.setSeatSurcharge(new BigDecimal("15.00"));
-        when(seats.confirm(any(), anyList())).thenReturn(new SeatConfirmResponse(List.of(), List.of(501L)));
+    void noSeatMessageWhenNobodyPickedASeat() {
+        seated.setSeatInstanceId(null);
+        seated.setStatus(PassengerSegmentStatus.NOT_SEATED);
 
         lifecycle.confirm(booking, 77L, "PAYMENT:77");
 
-        assertThat(booking.getStatus()).isEqualTo(BookingStatus.CONFIRMED);
-        assertThat(seated.getSeatInstanceId()).isNull();
-        assertThat(seated.getSeatSurcharge()).isEqualByComparingTo("0");
-        assertThat(seated.getStatus()).isEqualTo(PassengerSegmentStatus.NOT_SEATED);
-    }
-
-    @Test
-    void seatServiceDownDoesNotBlockAPaidBooking() {
-        when(seats.confirm(any(), anyList())).thenThrow(new RuntimeException("seat-service unavailable"));
-
-        lifecycle.confirm(booking, 77L, "PAYMENT:77");
-
-        assertThat(booking.getStatus()).isEqualTo(BookingStatus.CONFIRMED);
-        assertThat(seated.getStatus()).isEqualTo(PassengerSegmentStatus.SEAT_HELD);   // retried later
+        verify(seats, never()).confirmAfterCommit(any());
     }
 
     @Test

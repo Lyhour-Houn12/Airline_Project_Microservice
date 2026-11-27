@@ -26,6 +26,13 @@ Port 8066, database `booking_db`. Owns bookings (PNR), their flights, passengers
 
 All status changes with side effects live in `service/BookingLifecycle`.
 
+## Messages to other services (outbox)
+
+Seat release, seat booking (after payment) and refund requests are **outbox messages**: saved in the
+same transaction as the booking change (`outbox_messages` table), sent right after commit, and retried
+every few seconds (backing off to 10 minutes) until the other service accepts them. A seat-service or
+payment-service outage only delays them. Handlers are in `service/messaging`; receivers handle repeats.
+
 ## Internal endpoints
 
 `/internal/**` (here and in seat-service) is service-to-service only. **The API gateway must never
