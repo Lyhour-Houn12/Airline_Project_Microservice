@@ -64,4 +64,12 @@ public class FareCalculator {
     private static BigDecimal orZero(BigDecimal value) {
         return value != null ? value : BigDecimal.ZERO;
     }
+
+    /** What one passenger of this type pays for this fare (before any seat surcharge). */
+    public BigDecimal quote(FareResponse fare, PassengerType type) {
+        BookingSegment s = BookingSegment.builder().build();
+        snapshot(s, fare);
+        int percent = percentFor(type);
+        return share(s.getBaseFare(), percent).add(share(s.getTaxesAndFees(), percent)).add(share(s.getAirlineFees(), percent));
+    }
 }

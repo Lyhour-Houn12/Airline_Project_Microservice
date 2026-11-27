@@ -2,6 +2,18 @@
 
 Port 8066, database `booking_db`. Owns bookings (PNR), their flights, passengers, seats and tickets.
 
+## Flight search (public, no login)
+
+```
+GET /api/v1/flight-search?from=1&to=4&date=2026-12-24&adults=2&children=1&infants=0&cabin=ECONOMY&sort=PRICE
+```
+
+`from` / `to` are airport ids (from `GET /api/v1/airports`), `date` is the local departure date.
+Returns every bookable flight (scheduled, with time zones, room for the whole party), each with its
+cabins (`seatsLeft`) and fares priced for this party (`pricePerAdult`, `pricePerChild`,
+`pricePerInfant`, `totalPrice`), cheapest first. `sort=DEPARTURE` (default) or `PRICE`.
+Book a result with `POST /api/v1/bookings/{id}/segments {flightInstanceId, fareId}`.
+
 ## The booking flow
 
 ```

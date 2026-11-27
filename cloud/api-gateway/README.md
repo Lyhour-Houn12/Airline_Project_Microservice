@@ -28,7 +28,7 @@ only guarantees that the identity they receive is real.
 | `/api/v1/cabin-classes/**`, `/api/v1/seat-maps/**`, `/api/v1/seats/**`, `/api/v1/seat-instances/**`, `/api/v1/flight-instance-cabins/**` | seat-service |
 | `/api/v1/fares/**`, `/api/v1/fare-rules/**`, `/api/v1/baggage-policies/**` | pricing-service |
 | `/api/v1/ancillaries/**`, `/api/v1/meals/**`, `/api/v1/insurance-coverages/**`, `/api/v1/flight-cabin-ancillaries/**`, `/api/v1/flight-instance-meals/**` | ancillary-service |
-| `/api/v1/bookings/**`, `/api/v1/tickets/**` | booking-service |
+| `/api/v1/bookings/**`, `/api/v1/tickets/**`, `/api/v1/flight-search/**` | booking-service |
 | `/api/v1/payments/**` (incl. PayWay's callback) | payment-service |
 
 Adding a controller under a new prefix? Add it to `application.yaml`, or it won't be reachable.
