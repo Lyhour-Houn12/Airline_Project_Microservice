@@ -52,4 +52,4 @@ jobs:
       - name: Build every image
         run: scripts/build-images.sh --parallel
       - name: List images
-        run: docker images "airline/*"
+        run: docker images "lyhour121/*"

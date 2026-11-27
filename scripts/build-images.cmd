@@ -12,8 +12,8 @@ rem   set IMAGE_PREFIX=<docker-hub-user> ^& scripts\build-images.cmd --push
 rem                                                             build, then `docker push` each image (needs `docker login`)
 rem   scripts\build-images.cmd -p --push booking-service        flags and service names combine freely
 rem
-rem Images: <prefix>/<service>:<version> and :latest. The prefix is <docker.image.prefix> in the root
-rem pom.xml ("airline"), or IMAGE_PREFIX. JIB_ARCH=amd64 / arm64 picks the CPU type (default amd64 on Windows).
+rem Images: <prefix>/<service>:latest. The prefix is <docker.image.prefix> in the root pom.xml
+rem ("lyhour121"), or IMAGE_PREFIX. The CPU type is arm64; JIB_ARCH=amd64 builds for ordinary servers.
 
 set "SCRIPT_DIR=%~dp0"
 for %%I in ("%SCRIPT_DIR%..") do set "PROJECT_ROOT=%%~fI"

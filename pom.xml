@@ -27,11 +27,10 @@
         <spring-cloud.version>2025.1.3</spring-cloud.version>
         <lombok.version>1.18.42</lombok.version>
 
-        <!-- Docker images (Jib): mvn -DskipTests package jib:dockerBuild -->
-        <jib.version>3.5.2</jib.version>
-        <jib.skip>true</jib.skip>                      <!-- services/ and cloud/ turn it on; common-lib has no image -->
-        <jib.arch>amd64</jib.arch>                     <!-- arm64 on Apple Silicon (profile below) -->
-        <docker.image.prefix>airline</docker.image.prefix>
+        <!-- Docker images (Jib): scripts/build-images.sh -->
+        <docker.image.prefix>lyhour121</docker.image.prefix>   <!-- Docker Hub user -->
+        <jib.arch>arm64</jib.arch>                             <!-- JIB_ARCH=amd64 scripts/build-images.sh for servers -->
+        <jib.skip>true</jib.skip>                              <!-- services/ and cloud/ turn it on; common-lib has no image -->
     </properties>
 
     <dependencyManagement>
@@ -91,12 +90,11 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <!-- Builds each service's image straight from Maven, no Dockerfile. Only compiled classes,
-                         resources and dependencies go in, so a local .env can never end up in an image. -->
                     <groupId>com.google.cloud.tools</groupId>
                     <artifactId>jib-maven-plugin</artifactId>
-                    <version>${jib.version}</version>
+                    <version>3.5.2</version>
                     <dependencies>
+                        <!-- keeps spring-boot-devtools out of the images -->
                         <dependency>
                             <groupId>com.google.cloud.tools</groupId>
                             <artifactId>jib-spring-boot-extension-maven</artifactId>
@@ -106,7 +104,6 @@
                     <configuration>
                         <skip>${jib.skip}</skip>
                         <from>
-                            <image>eclipse-temurin:21-jre</image>
                             <platforms>
                                 <platform>
                                     <architecture>${jib.arch}</architecture>
@@ -115,24 +112,9 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>${docker.image.prefix}/${project.artifactId}:${project.version}</image>
-                            <tags>
-                                <tag>latest</tag>
-                            </tags>
+                            <image>${docker.image.prefix}/${project.artifactId}:latest</image>
                         </to>
-                        <container>
-                            <user>1001</user>                <!-- not root -->
-                            <!-- small heaps: a dozen JVMs share one machine -->
-                            <jvmFlags>
-                                <jvmFlag>-Xmx256m</jvmFlag>
-                                <jvmFlag>-Xss512k</jvmFlag>
-                                <jvmFlag>-XX:+UseSerialGC</jvmFlag>
-                                <jvmFlag>-XX:TieredStopAtLevel=1</jvmFlag>
-                            </jvmFlags>
-                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                        </container>
                         <pluginExtensions>
-                            <!-- leaves spring-boot-devtools out of the image -->
                             <pluginExtension>
                                 <implementation>com.google.cloud.tools.jib.maven.extension.springboot.JibSpringBootExtension</implementation>
                             </pluginExtension>
@@ -143,15 +125,4 @@
         </pluginManagement>
     </build>
 
-    <profiles>
-        <profile>
-            <id>apple-silicon</id>     <!-- images that run natively on an M-series Mac -->
-            <activation>
-                <os><arch>aarch64</arch></os>
-            </activation>
-            <properties>
-                <jib.arch>arm64</jib.arch>
-            </properties>
-        </profile>
-    </profiles>
 </project>

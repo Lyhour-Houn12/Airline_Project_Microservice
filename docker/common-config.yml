@@ -11,6 +11,8 @@ services:
     networks:
       - airline
     restart: unless-stopped
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60 -XX:+UseSerialGC"   # heap = 60 % of the 512m limit
     deploy:
       resources:
         limits:
