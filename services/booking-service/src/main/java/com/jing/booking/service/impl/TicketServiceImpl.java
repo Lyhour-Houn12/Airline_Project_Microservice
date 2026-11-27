@@ -25,14 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
     private static final String AIRLINE_PREFIX = "999";   // TODO: per-airline accounting code (segment.getAirlineId())
-    private static  final SecureRandom RANDOM = new SecureRandom();
+    // SecureRandom is in java.base; RandomGenerator.getDefault() needs the jdk.random module,
+    // which slim runtimes (the Docker image) don't have
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final TicketRepository ticketRepository;
     private final BookingRepository bookingRepository;
@@ -163,7 +164,7 @@ public class TicketServiceImpl implements TicketService {
     private String generateTicketNumber() {
         String number;
         do{
-            number = AIRLINE_PREFIX + String.format("%010d", RandomGenerator.getDefault().nextLong(10_000_000_000L));
+            number = AIRLINE_PREFIX + String.format("%010d", RANDOM.nextLong(10_000_000_000L));
         }while (ticketRepository.existsByTicketNumber(number));
         return number;
     }

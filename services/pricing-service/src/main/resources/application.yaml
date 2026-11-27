@@ -18,3 +18,8 @@ spring:
       ddl-auto: validate   # the schema is owned by Flyway (src/main/resources/db/migration)
     open-in-view: false
 
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}   # docker: http://discovery-server:8761/eureka/
