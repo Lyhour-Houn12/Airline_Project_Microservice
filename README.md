@@ -40,6 +40,17 @@ database login); `docker/docker-compose.yml` lists the services, each extending 
 Only the gateway, Eureka and Postgres have host ports: the services are reached through the gateway.
 Set `PAYMENT_ABA_BASE_URL=http://127.0.0.1:9` to run without calling ABA.
 
+**The whole flow in one command**, once the system is up (Docker or local, through the gateway):
+
+```bash
+scripts/e2e-flow.sh                   # admin → airline owner → flight + fares → search → booking → payment → tickets
+CANCEL_FLIGHT=1 scripts/e2e-flow.sh   # ... then the owner cancels the flight
+```
+
+It creates its own owner, airline, flight and customer each run (sign-up codes are read from the
+user-service log), and uses the admin login from `services/user-service/.env`. ABA is not called:
+the payment is created for real, and ABA's "paid" callback is simulated.
+
 **Locally from the IDE / Maven** (needs a local Postgres on 5432 with the databases above):
 
 ```bash
