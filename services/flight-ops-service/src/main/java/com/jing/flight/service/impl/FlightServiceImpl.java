@@ -1,5 +1,7 @@
 package com.jing.flight.service.impl;
 
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.flight.client.AirportZones;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.exception.BadRequestException;
@@ -40,12 +42,12 @@ public class FlightServiceImpl implements FlightService {
     private static final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^[A-Z0-9]{2}[0-9]{1,4}$");
     private final FlightRepository flightRepository;
     private final AirportZones airportZones;
+    private final AirlineAccess airlineAccess;
 
 
     @Override
     @Transactional
-    public FlightResponse createFlight(Long userId, FlightRequest request) {
-        requireId(userId, "User ID");
+    public FlightResponse createFlight(CurrentUser user, FlightRequest request) {
         requireNotNull(request, "Flight request is required");
 
         String flightNumber = normalizeFlightNumber(request.getFlightNumber());
@@ -53,15 +55,14 @@ public class FlightServiceImpl implements FlightService {
             throw new DuplicateResourceException("Flight", "flight number", request.getFlightNumber());
         }
 
-        Flight flight = buildNewFlight(request, flightNumber);
+        Flight flight = buildNewFlight(user, request, flightNumber);
         return toResponse(flightRepository.save(flight));
     }
 
 
     @Override
     @Transactional
-    public List<FlightResponse> createFlights(Long userId, List<FlightRequest> requests) {
-        requireId(userId, "User ID");
+    public List<FlightResponse> createFlights(CurrentUser user, List<FlightRequest> requests) {
         if (requests == null || requests.isEmpty()) {
             throw new BadRequestException("At least one flight is required");
         }
@@ -81,7 +82,7 @@ public class FlightServiceImpl implements FlightService {
             if (!seenNumbers.add(flightNumber)) {
                 throw new BadRequestException("Duplicate flight number in request: " + flightNumber);
             }
-            flights.add(buildNewFlight(request, flightNumber));
+            flights.add(buildNewFlight(user, request, flightNumber));
         }
 
         List<String> existing = flightRepository.findExistingFlightNumbers(seenNumbers);
@@ -113,7 +114,10 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FlightResponse> getFlightsByAirline(Long userId, String keyword, Long airlineId, Long aircraftId, Long departureAirportId, Long arrivalAirportId, FlightStatus status, int page, int size, String sortBy, String sortDirection) {
+    public PageResponse<FlightResponse> getFlightsByAirline(CurrentUser user, String keyword, Long airlineId, Long aircraftId, Long departureAirportId, Long arrivalAirportId, FlightStatus status, int page, int size, String sortBy, String sortDirection) {
+        if (user.isAirlineOwner()) {
+            airlineId = airlineAccess.ownedAirlineId(user);   // owners only ever see their own airline
+        }
         Specification<Flight> spec = FlightSpecification.withFilters(keyword, airlineId, aircraftId, departureAirportId, arrivalAirportId, status);
 
         Page<Flight> result = flightRepository.findAll(spec, buildPageable(page, size, sortBy, sortDirection));
@@ -123,9 +127,10 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional
-    public FlightResponse updateFlight(Long id, FlightRequest request) {
+    public FlightResponse updateFlight(CurrentUser user, Long id, FlightRequest request) {
         requireNotNull(request, "Flight request is required");
         Flight existing = findOrThrow(id);
+        airlineAccess.requireCanManage(user, existing.getAirlineId());
 
         if (request.getAirlineId() != null && !request.getAirlineId().equals(existing.getAirlineId())) {
             throw new BadRequestException("A flight cannot be moved to another airline");
@@ -140,7 +145,10 @@ public class FlightServiceImpl implements FlightService {
             request.setFlightNumber(flightNumber);
         }
 
-        if (request.getAircraftId() != null) requireId(request.getAircraftId(), "Aircraft ID");
+        if (request.getAircraftId() != null && !request.getAircraftId().equals(existing.getAircraftId())) {
+            requireId(request.getAircraftId(), "Aircraft ID");
+            airlineAccess.requireAircraftOf(request.getAircraftId(), existing.getAirlineId());
+        }
         if (request.getDepartureAirportId() != null) requireId(request.getDepartureAirportId(), "Departure airport ID");
         if (request.getArrivalAirportId() != null) requireId(request.getArrivalAirportId(), "Arrival airport ID");
 
@@ -156,9 +164,10 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional
-    public FlightResponse changeStatus(Long id, FlightStatus status) {
+    public FlightResponse changeStatus(CurrentUser user, Long id, FlightStatus status) {
         requireNotNull(status, "Flight status is required");
         Flight flight = findOrThrow(id);
+        airlineAccess.requireCanManage(user, flight.getAirlineId());
 
         if (flight.getStatus() != status) {
             flight.setStatus(status);
@@ -169,8 +178,10 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional
-    public void deleteFlight(Long id) {
-        flightRepository.delete(findOrThrow(id));
+    public void deleteFlight(CurrentUser user, Long id) {
+        Flight flight = findOrThrow(id);
+        airlineAccess.requireCanManage(user, flight.getAirlineId());
+        flightRepository.delete(flight);
     }
 
     @Override
@@ -193,15 +204,16 @@ public class FlightServiceImpl implements FlightService {
 
 
 
-    private Flight buildNewFlight(FlightRequest request, String flightNumber) {
-        // no airline lookup yet, so the airline id must come from the request
-        requireId(request.getAirlineId(), "Airline ID");
+    private Flight buildNewFlight(CurrentUser user, FlightRequest request, String flightNumber) {
+        // an owner always creates for their own airline; the aircraft must be one of that airline's
+        Long airlineId = airlineAccess.airlineForNew(user, request.getAirlineId());
         requireId(request.getAircraftId(), "Aircraft ID");
+        airlineAccess.requireAircraftOf(request.getAircraftId(), airlineId);
         validateRoute(request.getDepartureAirportId(), request.getArrivalAirportId());
 
         Flight flight = FlightMapper.toEntity(request);
         flight.setFlightNumber(flightNumber);
-        flight.setAirlineId(request.getAirlineId());
+        flight.setAirlineId(airlineId);
         return flight;
     }
 
@@ -235,7 +247,6 @@ public class FlightServiceImpl implements FlightService {
                 .orElseThrow(() -> new ResourceNotFoundException("Flight" , "id" , id));
     }
 
-    // TODO: pass aircraft / airline / airports here once the clients exist
     private FlightResponse toResponse(Flight flight) {
         return FlightMapper.toResponse(flight, null, null, null, null);
     }

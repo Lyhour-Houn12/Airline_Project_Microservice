@@ -1,5 +1,6 @@
 package com.jing.ancillary.controller;
 
+import com.jing.ancillary.service.AncillaryOwnership;
 import com.jing.common.security.RequireRole;
 import com.jing.common.security.AuthUser;
 import com.jing.common.security.CurrentUser;
@@ -27,12 +28,15 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class FlightCabinAncillaryController {
 
     private final FlightCabinAncillaryService fcaService;
+    private final AncillaryOwnership ownership;
 
     // assign one or many ancillaries to a flight instance cabin
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping
     public ResponseEntity<List<FlightCabinAncillaryResponse>> create(
+            CurrentUser user,
             @Valid @RequestBody FlightCabinAncillaryBulkRequest request) {
+        ownership.newFlightCabinAncillaries(user, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(fcaService.createFlightCabinAncillaries(request));
     }
@@ -68,23 +72,29 @@ public class FlightCabinAncillaryController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<FlightCabinAncillaryResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @Valid @RequestBody FlightCabinAncillaryUpdateRequest request) {
+        ownership.flightCabinAncillary(user, id);
         return ResponseEntity.ok(fcaService.updateFlightCabinAncillary(id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PatchMapping("/{id}/status")
     public ResponseEntity<FlightCabinAncillaryResponse> changeStatus(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestParam boolean active) {
+        ownership.flightCabinAncillary(user, id);
         return ResponseEntity.ok(fcaService.changeStatus(id, active));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.flightCabinAncillary(user, id);
         fcaService.deleteFlightCabinAncillary(id);
         return ResponseEntity.noContent().build();
     }

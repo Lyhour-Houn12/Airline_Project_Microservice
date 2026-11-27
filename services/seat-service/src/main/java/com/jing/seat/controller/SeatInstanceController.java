@@ -1,5 +1,7 @@
 package com.jing.seat.controller;
 
+import com.jing.seat.service.SeatOwnership;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.dto.seat.BlockSeatInstanceRequest;
 import com.jing.common.dto.seat.DeleteSeatInstancesResponse;
 import com.jing.common.dto.seat.FlightSeatMapResponse;
@@ -26,11 +28,14 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class SeatInstanceController {
 
     private final SeatInstanceService seatInstanceService;
+    private final SeatOwnership ownership;
 
     @PostMapping("/generate")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     public ResponseEntity<GenerateSeatInstanceResponse> generate(
+            CurrentUser user,
             @Valid @RequestBody GenerateSeatInstanceRequest request) {
+        ownership.flightInstance(user, request.flightInstanceId());
         return ResponseEntity.status(HttpStatus.CREATED).body(seatInstanceService.generate(request));
     }
 
@@ -51,27 +56,31 @@ public class SeatInstanceController {
 
     @PatchMapping("/{id}/block")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public SeatInstanceResponse block(@PathVariable Long id,
+    public SeatInstanceResponse block(CurrentUser user, @PathVariable Long id,
                                       @Valid @RequestBody BlockSeatInstanceRequest request) {
+        ownership.seatInstance(user, id);
         return seatInstanceService.block(id, request);
     }
 
     @PatchMapping("/{id}/unblock")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public SeatInstanceResponse unblock(@PathVariable Long id) {
+    public SeatInstanceResponse unblock(CurrentUser user, @PathVariable Long id) {
+        ownership.seatInstance(user, id);
         return seatInstanceService.unblock(id);
     }
 
     @PatchMapping("/{id}/surcharge")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public SeatInstanceResponse updateSurcharge(@PathVariable Long id,
+    public SeatInstanceResponse updateSurcharge(CurrentUser user, @PathVariable Long id,
                                                 @Valid @RequestBody UpdateSurchargeRequest request) {
+        ownership.seatInstance(user, id);
         return seatInstanceService.updateSurcharge(id, request);
     }
 
     @DeleteMapping("/flight-instance/{flightInstanceId}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public DeleteSeatInstancesResponse deleteByFlightInstance(@PathVariable Long flightInstanceId) {
+    public DeleteSeatInstancesResponse deleteByFlightInstance(CurrentUser user, @PathVariable Long flightInstanceId) {
+        ownership.flightInstance(user, flightInstanceId);
         return seatInstanceService.deleteByFlightInstance(flightInstanceId);
     }
 }

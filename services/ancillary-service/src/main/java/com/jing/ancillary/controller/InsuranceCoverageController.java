@@ -1,5 +1,6 @@
 package com.jing.ancillary.controller;
 
+import com.jing.ancillary.service.AncillaryOwnership;
 import com.jing.common.security.RequireRole;
 import com.jing.common.security.AuthUser;
 import com.jing.common.security.CurrentUser;
@@ -26,11 +27,14 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class InsuranceCoverageController {
 
     private final InsuranceService coverageService;
+    private final AncillaryOwnership ownership;
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping
     public ResponseEntity<InsuranceCoverageResponse> create(
+            CurrentUser user,
             @Valid @RequestBody InsuranceCoverageRequest request) {
+        ownership.newRecord(user, request.airlineId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(coverageService.createCoverage(request));
     }
@@ -71,23 +75,29 @@ public class InsuranceCoverageController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<InsuranceCoverageResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @Valid @RequestBody InsuranceCoverageRequest request) {
+        ownership.coverage(user, id);
         return ResponseEntity.ok(coverageService.updateCoverage(id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PatchMapping("/{id}/status")
     public ResponseEntity<InsuranceCoverageResponse> changeStatus(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestParam boolean active) {
+        ownership.coverage(user, id);
         return ResponseEntity.ok(coverageService.changeStatus(id, active));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.coverage(user, id);
         coverageService.deleteCoverage(id);
         return ResponseEntity.noContent().build();
     }

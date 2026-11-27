@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {"com.jing.booking", "com.jing.common"})
-@EnableFeignClients(basePackages = "com.jing.booking.client", defaultConfiguration = FeignConfig.class)
+@EnableFeignClients(basePackages = {"com.jing.booking.client", "com.jing.common.airline"}, defaultConfiguration = FeignConfig.class)
 @EnableScheduling            // BookingExpiryJob
 @ConfigurationPropertiesScan
 public class BookingServiceApplication {

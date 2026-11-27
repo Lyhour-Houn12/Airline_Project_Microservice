@@ -1,5 +1,7 @@
 package com.jing.seat.controller;
 
+import com.jing.seat.service.SeatOwnership;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.dto.seat.CabinClassRequest;
 import com.jing.common.dto.seat.CabinClassResponse;
 import com.jing.common.enumeration.CabinClassType;
@@ -21,10 +23,12 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class CabinClassController {
 
     private final CabinClassService cabinClassService;
+    private final SeatOwnership ownership;
 
     @PostMapping
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<CabinClassResponse> create(@RequestBody CabinClassRequest request) {
+    public ResponseEntity<CabinClassResponse> create(CurrentUser user, @RequestBody CabinClassRequest request) {
+        ownership.aircraft(user, request.getAircraftId());
         return ResponseEntity.status(HttpStatus.CREATED).body(cabinClassService.createCabinClass(request));
     }
 
@@ -58,14 +62,16 @@ public class CabinClassController {
 
     @PutMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<CabinClassResponse> update(@PathVariable Long id,
+    public ResponseEntity<CabinClassResponse> update(CurrentUser user, @PathVariable Long id,
                                                      @RequestBody CabinClassRequest request) {
+        ownership.cabinClass(user, id);
         return ResponseEntity.ok(cabinClassService.updateCabinClass(id, request));
     }
 
     @DeleteMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(CurrentUser user, @PathVariable Long id) {
+        ownership.cabinClass(user, id);
         cabinClassService.deleteCabinClass(id);
         return ResponseEntity.noContent().build();
     }

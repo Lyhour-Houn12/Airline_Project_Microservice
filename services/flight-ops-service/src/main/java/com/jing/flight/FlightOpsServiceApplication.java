@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {"com.jing.flight", "com.jing.common"})
 @EnableScheduling
-@EnableFeignClients(basePackages = "com.jing.flight.client", defaultConfiguration = FeignConfig.class)
+@EnableFeignClients(basePackages = {"com.jing.flight.client", "com.jing.common.airline"}, defaultConfiguration = FeignConfig.class)
 public class FlightOpsServiceApplication {
 
 	public static void main(String[] args) {

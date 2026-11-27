@@ -65,7 +65,7 @@ public class CabinClassServiceImpl implements CabinClassService {
             throw duplicateCode(code, aircraftId);
         }
 
-        // TODO (when Feign clients exist): verify that the aircraft exists.
+        // the aircraft's existence and owner are checked by SeatOwnership before this runs
 
         CabinClass cabinClass = CabinClassMapper.toEntity(request);
         cabinClass.setName(request.getName().trim());

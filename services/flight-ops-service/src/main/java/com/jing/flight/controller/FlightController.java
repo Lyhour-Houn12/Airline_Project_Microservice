@@ -37,7 +37,7 @@ public class FlightController {
     @RequireRole(ROLE_AIRLINE_OWNER)
     public ResponseEntity<FlightResponse> createFlight(CurrentUser user,
                                                        @Valid @RequestBody FlightRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.createFlight(user.id(), request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.createFlight(user, request));
     }
 
     @PostMapping("/batch")
@@ -45,7 +45,7 @@ public class FlightController {
     public ResponseEntity<List<FlightResponse>> createFlights(
             CurrentUser user,
             @RequestBody @NotEmpty @Size(max = 100) List<@Valid FlightRequest> requests) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.createFlights(user.id(), requests));
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightService.createFlights(user, requests));
     }
 
     @GetMapping("/{id}")
@@ -72,9 +72,9 @@ public class FlightController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
-        // TODO: for ROLE_AIRLINE_OWNER, force airlineId to the owner's airline once the lookup exists
+        // airline owners only see their own airline's flights (enforced in the service)
         return ResponseEntity.ok(flightService.getFlightsByAirline(
-                user.id(), keyword, airlineId, aircraftId, departureAirportId, arrivalAirportId,
+                user, keyword, airlineId, aircraftId, departureAirportId, arrivalAirportId,
                 status, page, size, sortBy, sortDirection));
     }
 
@@ -85,25 +85,25 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getFlightsByIds(ids));
     }
 
-    // TODO: an owner must only touch flights of their own airline (needs the airline lookup)
+    // an owner may only touch flights of their own airline (enforced in the service)
     @PutMapping("/{id}")
     @RequireRole({ROLE_AIRLINE_OWNER, ROLE_SYSTEM_ADMIN})
-    public ResponseEntity<FlightResponse> updateFlight(@PathVariable @Positive Long id,
+    public ResponseEntity<FlightResponse> updateFlight(CurrentUser user, @PathVariable @Positive Long id,
                                                        @Valid @RequestBody FlightRequest request) {
-        return ResponseEntity.ok(flightService.updateFlight(id, request));
+        return ResponseEntity.ok(flightService.updateFlight(user, id, request));
     }
 
     @PatchMapping("/{id}/status")
     @RequireRole({ROLE_AIRLINE_OWNER, ROLE_SYSTEM_ADMIN})
-    public ResponseEntity<FlightResponse> changeStatus(@PathVariable @Positive Long id,
+    public ResponseEntity<FlightResponse> changeStatus(CurrentUser user, @PathVariable @Positive Long id,
                                                        @RequestParam @NotNull FlightStatus status) {
-        return ResponseEntity.ok(flightService.changeStatus(id, status));
+        return ResponseEntity.ok(flightService.changeStatus(user, id, status));
     }
 
     @DeleteMapping("/{id}")
     @RequireRole({ROLE_AIRLINE_OWNER, ROLE_SYSTEM_ADMIN})
-    public ResponseEntity<Void> deleteFlight(@PathVariable @Positive Long id) {
-        flightService.deleteFlight(id);
+    public ResponseEntity<Void> deleteFlight(CurrentUser user, @PathVariable @Positive Long id) {
+        flightService.deleteFlight(user, id);
         return ResponseEntity.noContent().build();
     }
 }

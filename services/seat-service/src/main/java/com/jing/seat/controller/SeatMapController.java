@@ -1,5 +1,6 @@
 package com.jing.seat.controller;
 
+import com.jing.seat.service.SeatOwnership;
 import com.jing.common.dto.seat.SeatMapRequest;
 import com.jing.common.dto.seat.SeatMapResponse;
 import com.jing.common.pagination.PageResponse;
@@ -22,10 +23,12 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class SeatMapController {
 
     private final SeatMapService seatMapService;
+    private final SeatOwnership ownership;
 
     @PostMapping
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatMapResponse> createSeatMap(@Valid @RequestBody SeatMapRequest request) {
+    public ResponseEntity<SeatMapResponse> createSeatMap(CurrentUser user, @Valid @RequestBody SeatMapRequest request) {
+        ownership.newSeatMap(user, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(seatMapService.createSeatMap(request));
     }
 
@@ -55,14 +58,16 @@ public class SeatMapController {
 
     @PutMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<SeatMapResponse> updateSeatMap(@PathVariable Long id,
+    public ResponseEntity<SeatMapResponse> updateSeatMap(CurrentUser user, @PathVariable Long id,
                                                          @Valid @RequestBody SeatMapRequest request) {
+        ownership.seatMap(user, id);
         return ResponseEntity.ok(seatMapService.updateSeatMap(id, request));
     }
 
     @DeleteMapping("/{id}")
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
-    public ResponseEntity<Void> deleteSeatMap(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSeatMap(CurrentUser user, @PathVariable Long id) {
+        ownership.seatMap(user, id);
         seatMapService.deleteSeatMap(id);   // this call was missing: the endpoint used to delete nothing
         return ResponseEntity.noContent().build();
     }

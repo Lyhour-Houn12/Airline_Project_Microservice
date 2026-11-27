@@ -1,5 +1,6 @@
 package com.jing.ancillary.controller;
 
+import com.jing.ancillary.service.AncillaryOwnership;
 import com.jing.common.security.RequireRole;
 import com.jing.common.security.AuthUser;
 import com.jing.common.security.CurrentUser;
@@ -29,12 +30,15 @@ import static com.jing.common.enumeration.UserRole.ROLE_SYSTEM_ADMIN;
 public class FlightInstanceMealController {
 
     private final FlightInstanceMealService fimService;
+    private final AncillaryOwnership ownership;
 
     // assign one or many meals to a flight instance
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PostMapping
     public ResponseEntity<List<FlightInstanceMealResponse>> create(
+            CurrentUser user,
             @Valid @RequestBody FlightInstanceMealBulkRequest request) {
+        ownership.newFlightInstanceMeals(user, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(fimService.createFlightInstanceMeals(request));
     }
@@ -70,23 +74,29 @@ public class FlightInstanceMealController {
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PutMapping("/{id}")
     public ResponseEntity<FlightInstanceMealResponse> update(
+            CurrentUser user,
             @PathVariable Long id,
             @Valid @RequestBody FlightInstanceMealUpdateRequest request) {
+        ownership.flightInstanceMeal(user, id);
         return ResponseEntity.ok(fimService.updateFlightInstanceMeal(id, request));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @PatchMapping("/{id}/status")
     public ResponseEntity<FlightInstanceMealResponse> changeStatus(
+            CurrentUser user,
             @PathVariable Long id,
             @RequestParam boolean active) {
+        ownership.flightInstanceMeal(user, id);
         return ResponseEntity.ok(fimService.changeStatus(id, active));
     }
 
     @RequireRole({ROLE_SYSTEM_ADMIN, ROLE_AIRLINE_OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
+            CurrentUser user,
             @PathVariable Long id) {
+        ownership.flightInstanceMeal(user, id);
         fimService.deleteFlightInstanceMeal(id);
         return ResponseEntity.noContent().build();
     }

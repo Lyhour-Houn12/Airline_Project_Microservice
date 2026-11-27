@@ -1,5 +1,8 @@
 package com.jing.pricing.service.impl;
 
+import com.jing.pricing.client.FareReferences;
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -40,18 +43,22 @@ public class FareServiceImpl implements FareService {
     );
 
     private final FareRepository fareRepository;
+    private final AirlineAccess airlineAccess;
+    private final FareReferences fareReferences;
 
     @Override
     @Transactional
-    public FareResponse createFare(FareRequest fareRequest) {
+    public FareResponse createFare(CurrentUser user, FareRequest fareRequest) {
+        // an owner prices only their own airline's flights
+        fareRequest.setAirlineId(airlineAccess.airlineForNew(user, fareRequest.getAirlineId()));
         normalizeAndValidate(fareRequest);
 
         if(fareRepository.existsByFlightIdAndCabinClassIdAndFareName(fareRequest.getFlightId(), fareRequest.getCabinClassId(), fareRequest.getFareName())) {
             throw new DuplicateResourceException("Fare", fareRequest.getFareName(), fareRequest.getFareName());
         }
 
-        // TODO (when Feign clients exist): verify flight exists, belongs to airlineId,
-        // and cabinClassId belongs to that flight and matches cabinClass.
+        fareReferences.requireConsistent(fareRequest.getAirlineId(), fareRequest.getFlightId(),
+                fareRequest.getCabinClassId(), fareRequest.getCabinClass());
 
         Fare saved = fareRepository.save(FareMapper.toEntity(fareRequest));
         log.info("Created fare id={} flightId={} cabinClassId={}", saved.getId(), saved.getFlightId(), saved.getCabinClassId());
@@ -65,8 +72,9 @@ public class FareServiceImpl implements FareService {
 
     @Override
     @Transactional
-    public FareResponse updateFare(Long id, FareRequest request) {
+    public FareResponse updateFare(CurrentUser user, Long id, FareRequest request) {
         Fare fare = findOrThrow(id);
+        airlineAccess.requireCanManage(user, fare.getAirlineId());
         normalizeAndValidate(request);
 
         // the fare's identity (airline / flight / cabin class) is fixed after creation
@@ -89,8 +97,9 @@ public class FareServiceImpl implements FareService {
 
     @Override
     @Transactional
-    public void deleteFare(Long id) {
+    public void deleteFare(CurrentUser user, Long id) {
         Fare fare = findOrThrow(id);
+        airlineAccess.requireCanManage(user, fare.getAirlineId());
         // TODO: once booking-service exists, block (or soft-delete) fares that are referenced by bookings
         fareRepository.delete(fare);
         log.info("Deleted fare id={}", id);

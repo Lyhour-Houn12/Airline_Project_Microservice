@@ -1,5 +1,7 @@
 package com.jing.flight.service.impl;
 
+import com.jing.common.airline.AirlineAccess;
+import com.jing.common.security.CurrentUser;
 import com.jing.flight.client.AirportZones;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.exception.BadRequestException;
@@ -41,11 +43,12 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
     private final FlightInstanceRepository flightInstanceRepository;
     private final FlightRepository flightRepository;
     private final AirportZones airportZones;
+    private final AirlineAccess airlineAccess;
 
 
     @Override
     @Transactional
-    public FlightInstanceResponse createFlightInstanceWithCabins(Long userId, FlightInstanceRequest request) {
+    public FlightInstanceResponse createFlightInstanceWithCabins(CurrentUser user, FlightInstanceRequest request) {
         if (request == null) {
             throw new BadRequestException("Request body is required");
         }
@@ -54,7 +57,12 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         Flight flight = flightRepository.findById(request.getFlightId())
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "id", request.getFlightId()));
 
+        airlineAccess.requireCanManage(user, flight.getAirlineId());
+        if (request.getAirlineId() != null && !request.getAirlineId().equals(flight.getAirlineId())) {
+            throw new BadRequestException("A flight instance belongs to its flight's airline (" + flight.getAirlineId() + ")");
+        }
         FlightInstance instance = FlightInstanceMapper.toEntity(request, flight);
+        instance.setAirlineId(flight.getAirlineId());
 
         requireId(instance.getAirlineId(), "Airline ID");
         requireId(instance.getScheduleId(), "Schedule ID");
@@ -68,9 +76,8 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
                     + instance.getDepartureDateTime());
         }
 
-        // TODO: create cabins once the cabin model exists. userId is reserved for audit/ownership checks.
         FlightInstance saved = flightInstanceRepository.save(instance);
-        log.info("Flight instance {} created for flight {} by user {}", saved.getId(), flight.getId(), userId);
+        log.info("Flight instance {} created for flight {} by user {}", saved.getId(), flight.getId(), user.id());
         return toResponse(saved);
     }
 
@@ -115,12 +122,16 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     @Override
     @Transactional
-    public FlightInstanceResponse updateFlightInstance(Long id, FlightInstanceRequest request) {
+    public FlightInstanceResponse updateFlightInstance(CurrentUser user, Long id, FlightInstanceRequest request) {
         requireId(id, "Flight instance ID");
         if (request == null) {
             throw new BadRequestException("Request body is required");
         }
         FlightInstance existing = findOrThrow(id);
+        airlineAccess.requireCanManage(user, existing.getAirlineId());
+        if (request.getAirlineId() != null && !request.getAirlineId().equals(existing.getAirlineId())) {
+            throw new BadRequestException("A flight instance cannot be moved to another airline");
+        }
 
         if (request.getFlightId() != null && !request.getFlightId().equals(existing.getFlight().getId())) {
             throw new BadRequestException("A flight instance cannot be moved to a different flight");
@@ -138,12 +149,13 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     @Override
     @Transactional
-    public FlightInstanceResponse changeStatus(Long id, FlightStatus status) {
+    public FlightInstanceResponse changeStatus(CurrentUser user, Long id, FlightStatus status) {
         requireId(id, "Flight instance ID");
         if (status == null) {
             throw new BadRequestException("Status is required");
         }
         FlightInstance existing = findOrThrow(id);
+        airlineAccess.requireCanManage(user, existing.getAirlineId());
         if (existing.getStatus() == status) {
             return toResponse(existing);
         }
@@ -155,9 +167,10 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     @Override
     @Transactional
-    public void deleteFlightInstance(Long id) {
+    public void deleteFlightInstance(CurrentUser user, Long id) {
         requireId(id, "Flight instance ID");
         FlightInstance existing = findOrThrow(id);
+        airlineAccess.requireCanManage(user, existing.getAirlineId());
         // TODO: once booking-service exists, block deletes when bookings exist (or soft-delete via isActive=false)
         flightInstanceRepository.delete(existing);
     }
