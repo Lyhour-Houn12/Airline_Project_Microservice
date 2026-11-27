@@ -29,11 +29,15 @@ it): `services/user-service`, `cloud/api-gateway` (same `JWT_SECRET` as user-ser
 [Jib](https://github.com/GoogleContainerTools/jib) straight from Maven, no Dockerfile:
 
 ```bash
-mvn -DskipTests package jib:dockerBuild               # airline/<service>:latest (arm64 on Apple Silicon)
+scripts/build-images.sh --parallel                    # airline/<service>:latest, all 11 in ~25 s (Windows: scripts\build-images.cmd)
 docker compose -f docker/docker-compose.yml up -d     # API http://localhost:8080, Eureka http://localhost:8761
 docker compose -f docker/docker-compose.yml logs -f booking-service
 docker compose -f docker/docker-compose.yml down      # add -v to also delete the database volume
 ```
+
+`scripts/build-images.sh` also builds only some services (`scripts/build-images.sh booking-service`)
+and pushes to a registry (`IMAGE_PREFIX=<docker-hub-user> scripts/build-images.sh --push`; add
+`JIB_ARCH=amd64` when the images are for ordinary servers and you're on Apple Silicon). See `--help`.
 
 `docker/common-config.yml` holds what services share (network, restart, memory limit, Eureka,
 database login); `docker/docker-compose.yml` lists the services, each extending one of those blocks.

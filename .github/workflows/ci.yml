@@ -50,6 +50,6 @@ jobs:
       - name: Check the compose files
         run: docker compose -f docker/docker-compose.yml config --quiet
       - name: Build every image
-        run: mvn -B -ntp -DskipTests package jib:dockerBuild
+        run: scripts/build-images.sh --parallel
       - name: List images
         run: docker images "airline/*"
