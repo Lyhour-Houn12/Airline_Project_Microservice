@@ -15,6 +15,10 @@
 
     <artifactId>cloud</artifactId>
     <packaging>pom</packaging>
+
+    <properties>
+        <jib.skip>false</jib.skip>   <!-- every module here is a runnable service with an image -->
+    </properties>
     <name>Cloud Infrastructure</name>
     <description>Aggregator for cloud infrastructure modules (Eureka, Config, Gateway)</description>
 

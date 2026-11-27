@@ -1,0 +1,141 @@
+# The whole system on one machine. From the project root:
+#   mvn -DskipTests package jib:dockerBuild           # build the images (Jib, no Dockerfile)
+#   docker compose -f docker/docker-compose.yml up -d
+# API: http://localhost:8080 (the gateway)   Eureka: http://localhost:8761   Postgres: localhost:5433
+#
+# Shared settings are in common-config.yml. Secrets: each service's git-ignored .env (see the
+# .env.example next to it) is passed in at run time; images never contain one.
+
+name: airline
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+    ports:
+      - "5433:5432"     # 5433 so it doesn't clash with a local Postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-admin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  discovery-server:
+    image: airline/discovery-server:latest
+    environment:
+      SPRING_CLOUD_CONFIG_ENABLED: "false"
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "-o", "/dev/null", "http://localhost:8761/eureka/apps"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  api-gateway:
+    image: airline/api-gateway:latest
+    ports:
+      - "8080:8080"
+    env_file: [{ path: ../cloud/api-gateway/.env, required: false }]
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  # Services have no host ports: everything goes through the gateway, which checks the token
+  # and blocks /internal/**, like in production.
+
+  user-service:
+    image: airline/user-service:latest
+    env_file: [{ path: ../services/user-service/.env, required: false }]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  airline-core-service:
+    image: airline/airline-core-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/airline_core_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  location-service:
+    image: airline/location-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/location_service
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  flight-ops-service:
+    image: airline/flight-ops-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flight_ops_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  pricing-service:
+    image: airline/pricing-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pricing_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  seat-service:
+    image: airline/seat-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/seat_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  ancillary-service:
+    image: airline/ancillary-service:latest
+    env_file: [{ path: ../services/ancillary-service/.env, required: false }]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ancillary_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  booking-service:
+    image: airline/booking-service:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/booking_db
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  payment-service:
+    image: airline/payment-service:latest
+    env_file: [{ path: ../services/payment-service/.env, required: false }]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/payment_db
+      # point payments elsewhere, e.g. PAYMENT_ABA_BASE_URL=http://127.0.0.1:9 for local tests without ABA
+      PAYMENT_ABA_BASE_URL: ${PAYMENT_ABA_BASE_URL:-https://checkout-sandbox.payway.com.kh}
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+networks:
+  airline:
+    driver: bridge
+
+volumes:
+  postgres-data:

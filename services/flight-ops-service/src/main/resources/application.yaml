@@ -20,3 +20,8 @@ spring:
 
 outbox:
   poll-millis: 5000   # how often undelivered messages to other services are retried
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}   # docker: http://discovery-server:8761/eureka/

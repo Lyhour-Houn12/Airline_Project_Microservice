@@ -51,3 +51,8 @@ app:
 logging:
   level:
     org.springframework.security: ${SECURITY_LOG_LEVEL:INFO}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}   # docker: http://discovery-server:8761/eureka/

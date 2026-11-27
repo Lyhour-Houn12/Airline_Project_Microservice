@@ -26,6 +26,12 @@
         <spring.boot.version>4.1.1</spring.boot.version>
         <spring-cloud.version>2025.1.3</spring-cloud.version>
         <lombok.version>1.18.42</lombok.version>
+
+        <!-- Docker images (Jib): mvn -DskipTests package jib:dockerBuild -->
+        <jib.version>3.5.2</jib.version>
+        <jib.skip>true</jib.skip>                      <!-- services/ and cloud/ turn it on; common-lib has no image -->
+        <jib.arch>amd64</jib.arch>                     <!-- arm64 on Apple Silicon (profile below) -->
+        <docker.image.prefix>airline</docker.image.prefix>
     </properties>
 
     <dependencyManagement>
@@ -74,11 +80,78 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring.boot.version}</version>
+                    <executions>
+                        <!-- package also makes a runnable jar: java -jar target/<service>.jar -->
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
-
-
+                <plugin>
+                    <!-- Builds each service's image straight from Maven, no Dockerfile. Only compiled classes,
+                         resources and dependencies go in, so a local .env can never end up in an image. -->
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.cloud.tools</groupId>
+                            <artifactId>jib-spring-boot-extension-maven</artifactId>
+                            <version>0.1.0</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <skip>${jib.skip}</skip>
+                        <from>
+                            <image>eclipse-temurin:21-jre</image>
+                            <platforms>
+                                <platform>
+                                    <architecture>${jib.arch}</architecture>
+                                    <os>linux</os>
+                                </platform>
+                            </platforms>
+                        </from>
+                        <to>
+                            <image>${docker.image.prefix}/${project.artifactId}:${project.version}</image>
+                            <tags>
+                                <tag>latest</tag>
+                            </tags>
+                        </to>
+                        <container>
+                            <user>1001</user>                <!-- not root -->
+                            <!-- small heaps: a dozen JVMs share one machine -->
+                            <jvmFlags>
+                                <jvmFlag>-Xmx256m</jvmFlag>
+                                <jvmFlag>-Xss512k</jvmFlag>
+                                <jvmFlag>-XX:+UseSerialGC</jvmFlag>
+                                <jvmFlag>-XX:TieredStopAtLevel=1</jvmFlag>
+                            </jvmFlags>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
+                        <pluginExtensions>
+                            <!-- leaves spring-boot-devtools out of the image -->
+                            <pluginExtension>
+                                <implementation>com.google.cloud.tools.jib.maven.extension.springboot.JibSpringBootExtension</implementation>
+                            </pluginExtension>
+                        </pluginExtensions>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>apple-silicon</id>     <!-- images that run natively on an M-series Mac -->
+            <activation>
+                <os><arch>aarch64</arch></os>
+            </activation>
+            <properties>
+                <jib.arch>arm64</jib.arch>
+            </properties>
+        </profile>
+    </profiles>
 </project>

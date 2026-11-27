@@ -73,7 +73,7 @@ gateway:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}   # docker: http://discovery-server:8761/eureka/
   instance:
     prefer-ip-address: true
 

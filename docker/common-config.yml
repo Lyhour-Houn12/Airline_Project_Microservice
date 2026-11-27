@@ -1,0 +1,38 @@
+# Shared building blocks for docker-compose.yml. Each service there picks one with
+#   extends: { file: common-config.yml, service: <block> }
+# and adds only what's its own (image, database, secrets, ports).
+#
+#   network-deploy-service        network, restart policy, memory limit      (everything)
+#   └─ microservice-base-config   Eureka, no config-server, waits for Eureka (gateway)
+#      └─ microservice-db-config  + Postgres login, waits for Postgres       (services with a database)
+
+services:
+  network-deploy-service:
+    networks:
+      - airline
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA_URL: http://discovery-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"   # register with the container's IP, reachable from the others
+      SPRING_CLOUD_CONFIG_ENABLED: "false"      # each service uses its own application.yaml
+
+  microservice-db-config:
+    extends:
+      service: microservice-base-config
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-admin}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-admin}
