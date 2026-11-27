@@ -2,6 +2,7 @@ package com.jing.booking.validatation;
 
 import com.jing.booking.mapper.PassengerMapper;
 import com.jing.booking.model.Booking;
+import com.jing.booking.model.BookingSegment;
 import com.jing.booking.model.Passenger;
 import com.jing.booking.payload.request.PassengerRequest;
 import com.jing.common.enumeration.PassengerType;
@@ -9,6 +10,7 @@ import com.jing.common.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.time.Period;
 
 @Component
@@ -23,11 +25,9 @@ public class PassengerValidator {
      * Returns the accompanying adult for an infant, or null.
      */
     public Passenger validate(PassengerRequest r, Booking booking, Passenger existing) {
-        // TODO: use the departure date of the last segment once segments exist
-        LocalDate reference = LocalDate.now();
-
-        validateAge(r, reference);
-        validatePassportExpiry(r, reference);
+        Trip trip = Trip.of(booking);
+        checkAge(r.passengerType(), r.dateOfBirth(), trip, null);
+        checkPassport(r.passportExpiry(), trip, null);
         validateNotDuplicate(r, booking, existing);
 
         if (existing != null && r.passengerType() != PassengerType.ADULT
@@ -44,33 +44,68 @@ public class PassengerValidator {
     }
 
 
-    private void validateAge(PassengerRequest r, LocalDate reference){
-        int age = Period.between(r.dateOfBirth(), LocalDate.now()).getYears();
+    /**
+     * The travel dates that matter: a passenger's type must hold for the whole trip, so minimum ages are
+     * checked on the first flight and maximum ages (and the passport) on the last one. Local dates at the
+     * departure airports. Without flights yet: today.
+     */
+    record Trip(LocalDate firstDay, LocalDate lastDay) {
+        static Trip of(Booking booking) {
+            List<BookingSegment> segments = booking.getSegments();
+            if (segments.isEmpty()) {
+                LocalDate today = LocalDate.now();
+                return new Trip(today, today);
+            }
+            LocalDate first = segments.stream().map(s -> s.getDepartureTime().toLocalDate()).min(LocalDate::compareTo).get();
+            LocalDate last = segments.stream().map(s -> s.getDepartureTime().toLocalDate()).max(LocalDate::compareTo).get();
+            return new Trip(first, last);
+        }
+    }
 
-        switch (r.passengerType()){
+    /**
+     * Re-checks every passenger after the booking's flights changed: a baby who was an infant for a
+     * flight next week may already be 2 on a return flight next year.
+     */
+    public void revalidateForTrip(Booking booking) {
+        Trip trip = Trip.of(booking);
+        for (Passenger p : booking.getPassengers()) {
+            checkAge(p.getPassengerType(), p.getDateOfBirth(), trip, p.getFullName());
+            checkPassport(p.getPassportExpiry(), trip, p.getFullName());
+        }
+    }
+
+    private void checkAge(PassengerType type, LocalDate dateOfBirth, Trip trip, String who) {
+        int ageAtStart = Period.between(dateOfBirth, trip.firstDay()).getYears();
+        int ageAtEnd = Period.between(dateOfBirth, trip.lastDay()).getYears();
+        String prefix = who == null ? "" : who + ": ";
+        switch (type) {
             case ADULT -> {
-                if (age < ADULT_MIN_AGE){
-                    throw new BadRequestException("An adult must be at least " + ADULT_MIN_AGE + " years old");
-                }
+                if (ageAtStart < ADULT_MIN_AGE)
+                    throw new BadRequestException(prefix + "an adult must be at least " + ADULT_MIN_AGE
+                            + " years old on " + trip.firstDay());
             }
             case CHILD -> {
-                if (age < CHILD_MIN_AGE || age >= ADULT_MIN_AGE) {
-                    throw new BadRequestException("A child must be between " + CHILD_MIN_AGE
-                            + " and " + (ADULT_MIN_AGE - 1) + " years old");
-                }
+                if (ageAtStart < CHILD_MIN_AGE)
+                    throw new BadRequestException(prefix + "a child must be at least " + CHILD_MIN_AGE
+                            + " years old on " + trip.firstDay() + " (book as an infant)");
+                if (ageAtEnd >= ADULT_MIN_AGE)
+                    throw new BadRequestException(prefix + "is " + ADULT_MIN_AGE + " or older on " + trip.lastDay()
+                            + " and must be booked as an adult");
             }
             case INFANT -> {
-                if (age >= CHILD_MIN_AGE) {
-                    throw new BadRequestException("An infant must be under " + CHILD_MIN_AGE + " years old");
-                }
+                if (ageAtEnd >= CHILD_MIN_AGE)
+                    throw new BadRequestException(prefix + "is " + CHILD_MIN_AGE + " or older on " + trip.lastDay()
+                            + " and needs a seat: book as a child");
             }
         }
     }
 
-    private void validatePassportExpiry(PassengerRequest r, LocalDate reference) {
-        // TODO: many countries require 6 months validity after the return date: check once segments exist
-        if (r.passportExpiry() != null && !r.passportExpiry().isAfter(reference)) {
-            throw new BadRequestException("Passport has expired");
+    /** The passport must still be valid on the day of the last flight. */
+    private void checkPassport(LocalDate passportExpiry, Trip trip, String who) {
+        // many countries also require 6 months validity on arrival; that depends on the destination
+        if (passportExpiry != null && !passportExpiry.isAfter(trip.lastDay())) {
+            throw new BadRequestException((who == null ? "" : who + ": ")
+                    + "passport expires before the last flight (" + trip.lastDay() + ")");
         }
     }
 

@@ -16,6 +16,7 @@ import com.jing.booking.service.SeatInventory;
 import com.jing.booking.specification.BookingSegmentSpecs;
 import com.jing.booking.utils.AccessGuard;
 import com.jing.booking.validatation.BookingSegmentValidator;
+import com.jing.booking.validatation.PassengerValidator;
 import com.jing.common.dto.flight.FlightInstanceResponse;
 import com.jing.common.dto.pricing.FareResponse;
 import com.jing.common.enumeration.BookingStatus;
@@ -54,6 +55,7 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
     private final BookingSegmentRepository bookingSegmentRepository;
     private final BookingRepository bookingRepository;
     private final BookingSegmentValidator bookingSegmentValidator;
+    private final PassengerValidator passengerValidator;
     private final AccessGuard accessGuard;
     private final RemoteLookup remoteLookup;
     private final FareCalculator fareCalculator;
@@ -78,6 +80,7 @@ public class BookingSegmentServiceImpl implements BookingSegmentService {
         segment.setSegmentOrder(booking.getSegments().size() + 1);
 
         booking.addSegment(segment);
+        passengerValidator.revalidateForTrip(booking);   // the trip's dates changed: ages / passports still OK?
         booking.getPassengers().forEach(p -> fareCalculator.price(booking.link(p, segment)));
         booking.recalculateTotal();
         bookingRepository.flush();
