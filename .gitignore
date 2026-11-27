@@ -1,0 +1,26 @@
+# Build output
+target/
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Local secrets: every service reads its own git-ignored .env (see each .env.example)
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS
+.DS_Store
+
+# Logs
+*.log

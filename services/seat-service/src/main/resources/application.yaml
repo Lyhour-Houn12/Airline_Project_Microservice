@@ -1,0 +1,24 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: seat-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/seat_db
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+

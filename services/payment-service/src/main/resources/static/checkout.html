@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://checkout.payway.com.kh/plugins/checkout2-0.js" defer></script>
+</head>
+<body>
+<form id="aba_merchant_request" method="POST" target="aba_webservice"><button type="submit">Pay now</button>
+</form>
+<script>
+    const checkout = {
+        "actionUrl": "https://checkout-sandbox.payway.com.kh/api/payment-gateway/v1/payments/purchase",
+        "fields": {
+            "req_time": "20261112034057",
+            "merchant_id": "ec476954",
+            "tran_id": "1794454857906533",
+            "amount": "150.00",
+            "items": "W3sibmFtZSI6IkZsaWdodCBib29raW5nIEJLMjAyNjExMTAwMDEiLCJwcmljZSI6IjE1MC4wMCIsInF1YW50aXR5IjoiMSJ9XQ==",
+            "firstname": "Lyhour",
+            "lastname": "Houn",
+            "email": "lyhour@example.com",
+            "phone": "012345678",
+            "type": "purchase",
+            "payment_option": "cards",
+            "currency": "USD",
+            "return_params": "7",
+            "hash": "dSz/WDJEh0Ac9OXSxJthUJLn/Js5LVFlEyYQXnh0LTh/dGOf+7J5HCjXnUz0XpRX44UYDutyKtlJXx3LQhgCng==",
+            "payment_gate": "0"
+        }
+    }
+
+    const form = document.getElementById(
+        "aba_merchant_request"
+    );
+
+    form.action = checkout.actionUrl;
+
+    Object.entries(checkout.fields).forEach(([key, value]) => {
+        const input = document.createElement("input");
+
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+
+        form.appendChild(input);
+    });
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (typeof AbaPayway === "undefined") {
+            console.error("ABA PayWay SDK is not loaded.");
+            return;
+        }
+        console.log("Opening ABA checkout...");
+        AbaPayway.checkout();
+    });
+</script>
+
+</body>
+</html>

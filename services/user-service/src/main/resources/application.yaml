@@ -1,0 +1,50 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  config:
+    import:
+      - optional:configserver:http://localhost:8888
+      - optional:file:./.env[.properties]   # local secrets, never committed (see .env.example)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: 587
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: user-service
+    access-token-minutes: 15
+    refresh-token-days: 7
+  otp:
+    expiry-minutes: 5
+    max-attempts: 5             # wrong guesses before the code is burned
+    resend-cooldown-seconds: 60
+  login-protection:
+    max-failed-attempts: 5
+    lockout-minutes: 15
+  mail:
+    enabled: false              # false = OTP is printed in the console (dev). true = real SMTP email
+    from: ${MAIL_FROM}
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+
+logging:
+  level:
+    org.springframework.security: ${SECURITY_LOG_LEVEL:INFO}

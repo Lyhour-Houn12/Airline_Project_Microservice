@@ -1,0 +1,33 @@
+server:
+  port: 8089   # change to whatever is free in your setup
+
+spring:
+  application:
+    name: ancillary-service
+  config:
+    import:
+      - optional:configserver:http://localhost:8888
+      - optional:file:./.env[.properties]
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ancillary_db
+    username: admin
+    password: admin
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+
+
+
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}

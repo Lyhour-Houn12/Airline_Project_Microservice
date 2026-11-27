@@ -1,0 +1,16 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: flight-ops-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flight_ops_db
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

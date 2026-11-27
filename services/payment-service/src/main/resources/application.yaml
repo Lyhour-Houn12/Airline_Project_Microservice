@@ -1,0 +1,26 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: payment-service
+  config:
+    import:
+      - optional:configserver:http://localhost:8888
+      - optional:file:./.env[.properties]   # local secrets, never committed (see .env.example)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+payment:
+  expiry-minutes: 15
+  aba:
+    base-url: https://checkout-sandbox.payway.com.kh
+    merchant-id: ${ABA_MERCHANT_ID}
+    api-key: ${ABA_API_KEY}
+    return-url: ${ABA_RETURN_URL:}      # public URL of the callback endpoint (ngrok for local)
+    continue-success-url: ${ABA_CONTINUE_SUCCESS_URL:}

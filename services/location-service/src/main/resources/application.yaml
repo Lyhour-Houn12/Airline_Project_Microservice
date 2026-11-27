@@ -1,0 +1,22 @@
+server:
+  port: 5004
+
+spring:
+  application:
+    name: location-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/location_service
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
