@@ -1,5 +1,6 @@
 package com.jing.flight.service.impl;
 
+import com.jing.flight.client.AirportZones;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -39,6 +40,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     private final FlightInstanceRepository flightInstanceRepository;
     private final FlightRepository flightRepository;
+    private final AirportZones airportZones;
 
 
     @Override
@@ -57,6 +59,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         requireId(instance.getAirlineId(), "Airline ID");
         requireId(instance.getScheduleId(), "Schedule ID");
         validateRoute(instance.getDepartureAirportId(), instance.getArrivalAirportId());
+        applyTimeZones(instance);
         validateState(instance);
 
         if (flightInstanceRepository.existsByFlightIdAndDepartureDateTime(
@@ -127,6 +130,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
 
         // Validate the final merged state, not just the incoming fields
         validateRoute(existing.getDepartureAirportId(), existing.getArrivalAirportId());
+        applyTimeZones(existing);
         validateState(existing);
 
         return toResponse(flightInstanceRepository.save(existing));
@@ -164,6 +168,14 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         return FlightInstanceMapper.toResponse(fi, null, null, null, null);
     }
 
+    /** Looks up both airports (400 if one doesn't exist or has no time zone) and sets the UTC moments. */
+    private void applyTimeZones(FlightInstance fi) {
+        if (fi.getDepartureDateTime() == null || fi.getArrivalDateTime() == null) {
+            throw new BadRequestException("Departure and arrival date-times are required");
+        }
+        fi.applyTimeZones(airportZones.zoneOf(fi.getDepartureAirportId()), airportZones.zoneOf(fi.getArrivalAirportId()));
+    }
+
     private void validateRoute(Long departureAirportId, Long arrivalAirportId) {
         requireId(departureAirportId, "Departure airport ID");
         requireId(arrivalAirportId, "Arrival airport ID");
@@ -179,8 +191,11 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         if (fi.getArrivalDateTime() == null) {
             throw new BadRequestException("Arrival date-time is required");
         }
-        if (!fi.getArrivalDateTime().isAfter(fi.getDepartureDateTime())) {
-            throw new BadRequestException("Arrival date-time must be after departure date-time");
+        // compare on the UTC clock: 10:00 Tokyo -> 03:00 Los Angeles the same day is a valid flight
+        if (!fi.getArrivalAt().isAfter(fi.getDepartureAt())) {
+            throw new BadRequestException("Arrival must be after departure (local times "
+                    + fi.getDepartureDateTime() + " " + fi.getDepartureTimeZone() + " -> "
+                    + fi.getArrivalDateTime() + " " + fi.getArrivalTimeZone() + ")");
         }
 
         Integer total = fi.getTotalSeats();

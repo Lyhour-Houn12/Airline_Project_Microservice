@@ -1,6 +1,16 @@
 package com.jing.payment.service.impl;
 
+import com.jing.common.exception.ServiceCommunicationException;
+import com.jing.payment.payload.response.AbaQr;
+import org.springframework.web.client.RestClientException;
+import java.time.Duration;
+import java.util.Map;
+
+import com.jing.common.dto.booking.BookingPaymentInfo;
 import com.jing.common.security.CurrentUser;
+import com.jing.payment.client.BookingClient;
+import java.time.ZoneId;
+import java.util.Set;
 import com.jing.common.enumeration.PaymentMethod;
 import com.jing.common.enumeration.PaymentStatus;
 import com.jing.common.exception.BadRequestException;
@@ -46,6 +56,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final AbaPayWayClient abaClient;
     private final ApplicationEventPublisher events;
     private final ObjectMapper mapper;
+    private final BookingClient bookingClient;
+
+    private static final Set<String> SUPPORTED_CURRENCIES = Set.of("USD", "KHR");
 
     @Value("${payment.expiry-minutes:15}")
     private long expiryMinutes;
@@ -60,16 +73,26 @@ public class PaymentServiceImpl implements PaymentService {
                 if (!existing.get().getUserId().equals(user.id())) {
                     throw new DuplicateResourceException("Payment", "idempotency key", idempotencyKey);
                 }
-                return PaymentMapper.toResponse(existing.get(), null);
+                return PaymentMapper.toResponse(existing.get());
             }
         }
-        // TODO (Feign): load the booking from booking-service, check it belongs to user.id(), is PENDING,
-        //  and take amount + currency from it. Until then the amount in the request is NOT trusted data.
-        if (req.method() != PaymentMethod.ABA_PAYWAY) {
-            throw new BadRequestException("Only ABA_PAYWAY is supported right now");
+        if (req.method() != PaymentMethod.ABA_PAYWAY && req.method() != PaymentMethod.ABA_PAYWAY_QR) {
+            throw new BadRequestException("Supported methods: ABA_PAYWAY (checkout page), ABA_PAYWAY_QR (QR code)");
+        }
+        // amount, currency and reference come from booking-service (400 if the booking can't be paid yet)
+        BookingPaymentInfo booking = bookingClient.paymentInfo(req.bookingId());
+        if (!booking.userId().equals(user.id()) && !user.isAdmin()) {
+            throw new ResourceNotFoundException("Booking", "id", req.bookingId());   // don't reveal it exists
+        }
+        if (!SUPPORTED_CURRENCIES.contains(booking.currency())) {
+            throw new BadRequestException("ABA PayWay only accepts " + SUPPORTED_CURRENCIES
+                    + "; this booking is in " + booking.currency());
+        }
+        if (req.method() == PaymentMethod.ABA_PAYWAY_QR) {
+            AbaPayWayGateway.qrOption(req.paymentOption(), booking.currency());   // 400 before anything is saved
         }
         if (paymentRepository.existsByBookingIdAndStatus(req.bookingId(), PaymentStatus.SUCCESS)) {
-            throw new DuplicateResourceException("Booking " + req.bookingReference() + " is already paid");
+            throw new DuplicateResourceException("Booking " + booking.bookingReference() + " is already paid");
         }
         // a new attempt supersedes any open one
         paymentRepository.findByBookingIdAndStatus(req.bookingId(), PaymentStatus.PENDING).forEach(old -> {
@@ -79,26 +102,50 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = paymentRepository.save(Payment.builder()
                 .bookingId(req.bookingId())
-                .bookingReference(req.bookingReference())
+                .bookingReference(booking.bookingReference())
                 .userId(user.id())
                 .tranId(newTranId())
-                .amount(req.amount())
-                .currency(req.currency() == null ? "USD" : req.currency())
+                .amount(booking.totalAmount())
+                .currency(booking.currency())
                 .method(req.method())
                 .status(PaymentStatus.PENDING)
-                .expiresAt(Instant.now().plus(expiryMinutes, ChronoUnit.MINUTES))
+                .expiresAt(paymentDeadline(booking))
                 .idempotencyKey(blankToNull(idempotencyKey))
                 .build());
 
+        if (req.method() == PaymentMethod.ABA_PAYWAY_QR) {
+            return PaymentMapper.toResponse(payment, null, createQr(payment, req));
+        }
         AbaCheckout checkout = abaGateway.buildCheckout(payment, req);
         logAttempt(payment.getId(), "CHECKOUT_CREATED", toJson(checkout.fields()));
-        return PaymentMapper.toResponse(payment, checkout);
+        return PaymentMapper.toResponse(payment, checkout, null);
+    }
+
+    /**
+     * Asks PayWay for a QR. Any failure throws, which rolls back the whole createPayment transaction:
+     * no half-created payment is left behind and the previous attempt is not superseded.
+     */
+    private AbaQr createQr(Payment payment, CreatePaymentRequest req) {
+        // the QR lives as long as the payment window, at least the 3 minutes PayWay requires
+        long seconds = Duration.between(Instant.now(), payment.getExpiresAt()).getSeconds();
+        int lifetime = (int) Math.max(3, (seconds + 59) / 60);
+        Map<String, String> fields = abaGateway.buildQrFields(payment, req, lifetime);
+        try {
+            AbaQr qr = abaClient.generateQr(fields, new BigDecimal(fields.get("amount")), lifetime);
+            logAttempt(payment.getId(), "QR_CREATED", toJson(fields));
+            return qr;
+        } catch (AbaPayWayClient.AbaApiException e) {
+            log.warn("PayWay refused the QR for payment {}: {} {}", payment.getId(), e.getCode(), e.getMessage());
+            throw new BadRequestException("ABA PayWay could not create the QR (" + e.getCode() + "): " + e.getMessage());
+        } catch (RestClientException e) {
+            throw new ServiceCommunicationException("ABA PayWay is not reachable: " + e.getMessage());
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public PaymentResponse getPaymentById(Long paymentId, CurrentUser user) {
-        return PaymentMapper.toResponse(loadAuthorized(paymentId, user), null);
+        return PaymentMapper.toResponse(loadAuthorized(paymentId, user));
     }
 
     @Override
@@ -106,7 +153,7 @@ public class PaymentServiceImpl implements PaymentService {
     public List<PaymentResponse> getPaymentsByBooking(Long bookingId, CurrentUser user) {
         return paymentRepository.findByBookingIdOrderByCreatedAtDesc(bookingId).stream()
                 .filter(p -> user.isAdmin() || p.getUserId().equals(user.id()))
-                .map(p -> PaymentMapper.toResponse(p, null))
+                .map(p -> PaymentMapper.toResponse(p))
                 .toList();
     }
 
@@ -114,7 +161,7 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponse syncPaymentStatus(Long paymentId, CurrentUser user) {
         Payment p = loadAuthorized(paymentId, user);
         reconcileWithPayWay(p);
-        return PaymentMapper.toResponse(p, null);
+        return PaymentMapper.toResponse(p);
     }
 
     @Override
@@ -125,7 +172,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BadRequestException("Only PENDING payments can be cancelled");
         }
         change(p, PaymentStatus.CANCELLED, "Cancelled by user");
-        return PaymentMapper.toResponse(p, null);
+        return PaymentMapper.toResponse(p);
     }
 
     @Override
@@ -138,7 +185,7 @@ public class PaymentServiceImpl implements PaymentService {
             return;
         }
         logAttempt(p.getId(), "CALLBACK", rawBody);
-        if (p.getStatus() == PaymentStatus.SUCCESS) return;                  // retry, already handled
+            if (p.getStatus() == PaymentStatus.SUCCESS) return;                  // retry, already handled
         if (!"0".equals(body.path("status").asText())) {
             log.warn("PayWay callback for {} has non-success status {}", tranId, body.path("status").asText());
             return;
@@ -171,6 +218,13 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 
+    @Override
+    public void reconcileByTranId(String tranId) {
+        paymentRepository.findByTranId(tranId).ifPresentOrElse(
+                this::reconcileWithPayWay,
+                () -> log.warn("PayWay notification for unknown tran_id {}", tranId));
+    }
+
     private void reconcileWithPayWay(Payment p) {
         if (p.getStatus() == PaymentStatus.SUCCESS || p.getStatus() == PaymentStatus.REFUNDED
                 || p.getStatus() == PaymentStatus.FAILED) return;
@@ -192,7 +246,10 @@ public class PaymentServiceImpl implements PaymentService {
             }
             case 3 -> { if (p.getStatus() == PaymentStatus.PENDING) change(p, PaymentStatus.FAILED, "Declined by PayWay"); }
             case 7 -> { if (p.getStatus() == PaymentStatus.PENDING) change(p, PaymentStatus.CANCELLED, "Cancelled at PayWay"); }
-            case 4 -> change(p, PaymentStatus.REFUNDED, "Refunded at PayWay");
+            case 4 -> {                                  // refunded outside our refund flow (e.g. merchant portal)
+                p.setRefundedAmount(p.getAmount());
+                change(p, PaymentStatus.REFUNDED, "Refunded at PayWay");
+            }
             default -> expireIfDue(p);
         }
     }
@@ -246,6 +303,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static String newTranId() {          // 16 digits, PayWay allows max 20
         return System.currentTimeMillis() + String.format("%03d", ThreadLocalRandom.current().nextInt(1000));
+    }
+
+    /** The payment window, but never longer than the booking's own hold (its seats are released then). */
+    private Instant paymentDeadline(BookingPaymentInfo booking) {
+        Instant deadline = Instant.now().plus(expiryMinutes, ChronoUnit.MINUTES);
+        if (booking.expiresAt() != null) {
+            Instant bookingEnd = booking.expiresAt().atZone(ZoneId.systemDefault()).toInstant();
+            if (bookingEnd.isBefore(deadline)) deadline = bookingEnd;
+        }
+        return deadline;
     }
 
     private static String blankToNull(String s) { return s == null || s.isBlank() ? null : s; }

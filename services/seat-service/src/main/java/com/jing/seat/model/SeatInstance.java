@@ -48,6 +48,14 @@ public class SeatInstance {
 
     private String blockedReason;
 
+    // Who holds or booked this seat: the booking reference (PNR). Null while AVAILABLE or BLOCKED.
+    @Column(name = "hold_reference", length = 20)
+    private String holdReference;
+
+    // A HELD seat whose hold lapsed counts as free again (the booking was never paid)
+    @Column(name = "held_until")
+    private LocalDateTime heldUntil;
+
     @Version
     private Long version;
 
@@ -58,4 +66,53 @@ public class SeatInstance {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // ------------------------------------------------------------------ hold life cycle
+
+    /** True when the seat can be taken right now: AVAILABLE, or HELD by a hold that already lapsed. */
+    public boolean isFreeAt(LocalDateTime now) {
+        return status == SeatAvailabilityStatus.AVAILABLE
+                || (status == SeatAvailabilityStatus.HELD && heldUntil != null && heldUntil.isBefore(now));
+    }
+
+    public boolean isHeldBy(String reference) {
+        return status == SeatAvailabilityStatus.HELD && reference.equals(holdReference);
+    }
+
+    /** Hold the seat for a booking. Holding it again for the same booking just extends the hold. */
+    public void hold(String reference, LocalDateTime until, LocalDateTime now) {
+        if (!isHeldBy(reference) && !isFreeAt(now)) {
+            throw new IllegalStateException("Seat " + seatLabel() + " is not available");
+        }
+        status = SeatAvailabilityStatus.HELD;
+        holdReference = reference;
+        heldUntil = until;
+    }
+
+    /** Book a seat this booking holds. Returns false when the hold was lost to someone else. */
+    public boolean confirm(String reference) {
+        if (!isHeldBy(reference)) {
+            return status == SeatAvailabilityStatus.BOOKED && reference.equals(holdReference);
+        }
+        status = SeatAvailabilityStatus.BOOKED;
+        heldUntil = null;
+        return true;
+    }
+
+    /** Give the seat back if this booking holds or booked it. Returns the status it had before. */
+    public SeatAvailabilityStatus release(String reference) {
+        SeatAvailabilityStatus before = status;
+        boolean mine = reference.equals(holdReference)
+                && (status == SeatAvailabilityStatus.HELD || status == SeatAvailabilityStatus.BOOKED);
+        if (mine) {
+            status = SeatAvailabilityStatus.AVAILABLE;
+            holdReference = null;
+            heldUntil = null;
+        }
+        return mine ? before : null;
+    }
+
+    private String seatLabel() {
+        return seat != null ? seat.getSeatNumber() : String.valueOf(id);
+    }
 }

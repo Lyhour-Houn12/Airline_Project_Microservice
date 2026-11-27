@@ -50,8 +50,14 @@ public class PassengerSegment {
     @Builder.Default
     private BigDecimal airlineFees = BigDecimal.ZERO;
 
+    // Extra charged by seat-service for the chosen seat (exit row, front rows...). 0 without a seat.
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal seatSurcharge = BigDecimal.ZERO;
+
     public BigDecimal getTotalPrice() {
-        return baseFare.add(taxesAndFees).add(airlineFees);
+        BigDecimal surcharge = seatSurcharge != null ? seatSurcharge : BigDecimal.ZERO;
+        return baseFare.add(taxesAndFees).add(airlineFees).add(surcharge);
     }
 
     @Override public boolean equals(Object o) {

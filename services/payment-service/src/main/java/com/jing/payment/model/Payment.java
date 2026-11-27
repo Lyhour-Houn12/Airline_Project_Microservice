@@ -43,6 +43,14 @@ public class Payment {
     private Instant expiresAt;
     private Instant paidAt;
     @Column(length = 255) private String failureReason;
+
+    // Sum of successful refunds. status becomes PARTIALLY_REFUNDED, then REFUNDED when it reaches amount.
+    @Builder.Default
+    @Column(precision = 12, scale = 2) private BigDecimal refundedAmount = BigDecimal.ZERO;
+
+    public BigDecimal refundable() {
+        return amount.subtract(refundedAmount != null ? refundedAmount : BigDecimal.ZERO);
+    }
     @Column(unique = true, length = 100) private String idempotencyKey;
 
     @Version private Long version;

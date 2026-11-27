@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -118,7 +119,7 @@ public class SeatInstanceServiceImpl implements SeatInstanceService {
                             .toList();
 
                     int availableSeats = (int) cabinsSeats.stream()
-                            .filter(si -> si.getStatus() == SeatAvailabilityStatus.AVAILABLE)
+                            .filter(si -> displayStatus(si) == SeatAvailabilityStatus.AVAILABLE)
                             .count();
 
                     return new FlightSeatMapResponse.CabinSeatMap(
@@ -257,12 +258,12 @@ public class SeatInstanceServiceImpl implements SeatInstanceService {
                 si.getSeat().getSeatNumber(),
                 String.valueOf(si.getSeat().getColumnLetter()),
                 si.getSeat().getSeatType(),
-                si.getStatus(),
+                displayStatus(si),
                 si.getSurcharge());
     }
 
 
-    private SeatInstanceResponse toResponse(SeatInstance si) {
+    static SeatInstanceResponse toResponse(SeatInstance si) {
         return new SeatInstanceResponse(
                 si.getId(),
                 si.getFlightInstanceId(),
@@ -274,5 +275,10 @@ public class SeatInstanceServiceImpl implements SeatInstanceService {
                 si.getStatus(),
                 si.getSurcharge(),
                 si.getBlockedReason());
+    }
+
+    /** A hold that lapsed (the booking was never paid) shows as AVAILABLE: anyone can take it. */
+    private static SeatAvailabilityStatus displayStatus(SeatInstance si) {
+        return si.isFreeAt(LocalDateTime.now()) ? SeatAvailabilityStatus.AVAILABLE : si.getStatus();
     }
 }

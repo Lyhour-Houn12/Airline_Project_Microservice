@@ -1,5 +1,8 @@
 package com.jing.flight.service.impl;
 
+import com.jing.flight.client.AirportZones;
+import com.jing.flight.service.FlightClock;
+import java.time.ZoneId;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.ResourceNotFoundException;
@@ -46,6 +49,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final FlightScheduleRepository scheduleRepository;
     private final FlightRepository flightRepository;
     private final FlightInstanceRepository flightInstanceRepository;
+    private final AirportZones airportZones;
 
 
 
@@ -139,7 +143,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         Flight flight = schedule.getFlight();
         Set<DayOfWeek> days = schedule.getOperatingDays();
-        int minutes = FlightScheduleMapper.durationMinutes(schedule.getDepartureTime(), schedule.getArrivalTime());
+        ZoneId departureZone = airportZones.zoneOf(schedule.getDepartureAirportId());
+        ZoneId arrivalZone = airportZones.zoneOf(schedule.getArrivalAirportId());
 
         Set<LocalDateTime> existing = new HashSet<>(flightInstanceRepository.findDepartureTimes(
                 flight.getId(), from.atStartOfDay(), to.plusDays(1).atStartOfDay()));
@@ -162,7 +167,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                             .departureAirportId(schedule.getDepartureAirportId())
                             .arrivalAirportId(schedule.getArrivalAirportId())
                             .departureDateTime(departure)
-                            .arrivalDateTime(departure.plusMinutes(minutes))
+                            .arrivalDateTime(FlightClock.arrivalFor(d, schedule.getDepartureTime(), departureZone,
+                                    schedule.getArrivalTime(), arrivalZone))
                             .totalSeats(req.getTotalSeats())
                             .availableSeats(req.getTotalSeats())
                             .status(FlightStatus.SCHEDULED)
@@ -173,6 +179,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                             .gate(req.getGate())
                     .build());
         }
+        toSave.forEach(fi -> fi.applyTimeZones(departureZone, arrivalZone));
         flightInstanceRepository.saveAll(toSave);
         log.info("Schedule {} generated {} instances ({} skipped) for {} to {}",
                 id, toSave.size(), skipped, from, to);
@@ -203,7 +210,10 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
 
         if (s.getDepartureTime() == null || s.getArrivalTime() == null)
             throw new BadRequestException("Departure and arrival times are required");
-        if (s.getDepartureTime().equals(s.getArrivalTime()))
+        ZoneId departureZone = airportZones.zoneOf(s.getDepartureAirportId());   // 400 if the airport doesn't exist
+        ZoneId arrivalZone = airportZones.zoneOf(s.getArrivalAirportId());
+        // the same clock time can be a real flight across time zones (e.g. a 1 h flight one zone west)
+        if (departureZone.equals(arrivalZone) && s.getDepartureTime().equals(s.getArrivalTime()))
             throw new BadRequestException("Departure and arrival times must be different");
 
         if (s.getStartDate() == null || s.getEndDate() == null)

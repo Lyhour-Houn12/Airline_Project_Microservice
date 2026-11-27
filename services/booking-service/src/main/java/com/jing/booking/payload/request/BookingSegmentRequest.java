@@ -1,24 +1,19 @@
 package com.jing.booking.payload.request;
 
-import com.jing.common.enumeration.CabinClassType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Positive;
 
-import java.time.LocalDateTime;
-
+/**
+ * Add a flight to a booking. Only ids are accepted: airports, times, flight number, cabin and price
+ * are read from flight-ops-service and pricing-service, so the client can't make them up.
+ *
+ * @param journeyNumber optional; omit for the current journey, or pass the next number to start
+ *                      the return (round trip) or the next city (multi-city)
+ */
 public record BookingSegmentRequest(
-        @NotNull Long flightId,
-        @NotNull Long flightInstanceId,
-        @NotNull Long airlineId,
-        @NotNull Long fareId,
-        @NotNull Long cabinClassId,
-        @NotNull CabinClassType cabinClass,
-        @NotNull Long departureAirportId,
-        @NotNull Long arrivalAirportId,
-        @NotNull LocalDateTime departureTime,
-        @NotNull LocalDateTime arrivalTime,
-        @Size(max = 10) String flightNumber,
+        @NotNull @Positive Long flightInstanceId,
+        @NotNull @Positive Long fareId,
         @Min(1) Integer journeyNumber
 ) {
 }

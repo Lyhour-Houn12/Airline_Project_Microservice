@@ -10,6 +10,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,11 @@ public final class FlightInstanceSpecification {
                 // Customers only ever see bookable, upcoming, scheduled instances
                 p.add(cb.isTrue(root.get("isActive")));
                 p.add(cb.equal(root.get("status"), FlightStatus.SCHEDULED));
-                p.add(cb.greaterThan(root.get("departureDateTime"), LocalDateTime.now()));
+                // "upcoming" on the UTC clock; old rows without it fall back to the local time
+                p.add(cb.or(
+                        cb.greaterThan(root.<Instant>get("departureAt"), Instant.now()),
+                        cb.and(cb.isNull(root.get("departureAt")),
+                                cb.greaterThan(root.get("departureDateTime"), LocalDateTime.now()))));
             }
 
             if (f != null) {

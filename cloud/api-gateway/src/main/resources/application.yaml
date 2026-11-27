@@ -1,0 +1,84 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import:
+      - optional:configserver:http://localhost:8888
+      - optional:file:./.env[.properties]   # JWT_SECRET (git-ignored, see .env.example)
+  cloud:
+    gateway:
+      server:
+        webflux:
+          # lb://<name> = find the service in Eureka and load-balance between its instances
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/auth/**,/api/v1/users/**
+            - id: airline-core-service
+              uri: lb://airline-core-service
+              predicates:
+                - Path=/api/v1/airlines/**,/api/v1/aircrafts/**
+            - id: location-service
+              uri: lb://location-service
+              predicates:
+                - Path=/api/v1/cities/**,/api/v1/airports/**
+            - id: flight-ops-service
+              uri: lb://flight-ops-service
+              predicates:
+                - Path=/api/v1/flights/**,/api/v1/flight-schedules/**,/api/v1/flight-instances/**
+            - id: seat-service
+              uri: lb://seat-service
+              predicates:
+                - Path=/api/v1/cabin-classes/**,/api/v1/seat-maps/**,/api/v1/seats/**,/api/v1/seat-instances/**,/api/v1/flight-instance-cabins/**
+            - id: pricing-service
+              uri: lb://pricing-service
+              predicates:
+                - Path=/api/v1/fares/**,/api/v1/fare-rules/**,/api/v1/baggage-policies/**
+            - id: ancillary-service
+              uri: lb://ancillary-service
+              predicates:
+                - Path=/api/v1/ancillaries/**,/api/v1/meals/**,/api/v1/insurance-coverages/**,/api/v1/flight-cabin-ancillaries/**,/api/v1/flight-instance-meals/**
+            - id: booking-service
+              uri: lb://booking-service
+              predicates:
+                - Path=/api/v1/bookings/**,/api/v1/tickets/**
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/v1/payments/**
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+                allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+                allowed-headers: Authorization,Content-Type,Idempotency-Key
+                allow-credentials: true
+                max-age: 3600
+
+gateway:
+  jwt-secret: ${JWT_SECRET}
+  jwt-issuer: user-service
+  # service-to-service lookups that sit under /api but must not be public (/internal/** is always blocked)
+  blocked-paths:
+    - /api/v1/flights/by-ids
+    - /api/v1/flight-instances/batch
+  # PayWay calls this; it never carries our token, so a stray Authorization header is ignored
+  anonymous-only:
+    - /api/v1/payments/aba/callback
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info   # not "gateway": it would publish the routing table

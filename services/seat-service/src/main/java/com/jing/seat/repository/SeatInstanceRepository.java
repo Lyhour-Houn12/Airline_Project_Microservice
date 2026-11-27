@@ -35,10 +35,10 @@ public interface SeatInstanceRepository extends JpaRepository<SeatInstance, Long
             COUNT(si)
         )
         FROM SeatInstance si
-        WHERE si.flightInstanceCabin.id = :flightInstanceCabinId
+        WHERE si.flightInstanceId = :flightInstanceId
         GROUP BY si.flightInstanceCabin.id, si.status
         """)
-    List<CabinStatusCount> countByCabinAndStatus(Long flightInstanceCabinId);
+    List<CabinStatusCount> countByCabinAndStatus(@Param("flightInstanceId") Long flightInstanceId);
 
 
     @Query("""
@@ -55,4 +55,13 @@ public interface SeatInstanceRepository extends JpaRepository<SeatInstance, Long
     @Modifying(clearAutomatically = true)
     @Query("delete from SeatInstance si where si.flightInstanceId = :flightInstanceId")
     int deleteAllByFlightInstanceId(@Param("flightInstanceId") Long flightInstanceId);
+
+    @Query("""
+       SELECT si FROM SeatInstance si
+       JOIN FETCH si.seat
+       JOIN FETCH si.flightInstanceCabin fic
+       JOIN FETCH fic.cabinClass
+       WHERE si.holdReference = :holdReference
+       """)
+    List<SeatInstance> findAllByHoldReference(@Param("holdReference") String holdReference);
 }

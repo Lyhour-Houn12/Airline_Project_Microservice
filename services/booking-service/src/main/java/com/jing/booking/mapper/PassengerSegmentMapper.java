@@ -12,6 +12,6 @@ public final class PassengerSegmentMapper {
         return new PassengerSegmentResponse(
                 ps.getId(), ps.getSegment().getId(), p.getId(), p.getFullName(), p.getPassengerType(),
                 ps.getSeatInstanceId(), ps.getStatus(),
-                ps.getBaseFare(), ps.getTaxesAndFees(), ps.getAirlineFees(), ps.getTotalPrice());
+                ps.getBaseFare(), ps.getTaxesAndFees(), ps.getAirlineFees(), ps.getSeatSurcharge(), ps.getTotalPrice());
     }
 }

@@ -24,6 +24,9 @@ public interface PaymentService {
     /** Called by the PayWay callback endpoint after the signature is verified. */
     void processAbaCallback(JsonNode body, String rawBody);
 
-    /** Internal, used by the expiry job: check PayWay, then mark paid or expired. */
+    /** Internal, used by the reconciliation job: check PayWay, then mark paid or expired. */
     void reconcilePendingPayment(Long paymentId);
+
+    /** An unverified notification named this transaction: ask PayWay what really happened. */
+    void reconcileByTranId(String tranId);
 }

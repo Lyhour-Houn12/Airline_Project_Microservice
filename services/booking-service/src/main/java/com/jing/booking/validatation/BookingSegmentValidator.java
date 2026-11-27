@@ -2,13 +2,12 @@ package com.jing.booking.validatation;
 
 import com.jing.booking.model.Booking;
 import com.jing.booking.model.BookingSegment;
-import com.jing.booking.payload.request.BookingSegmentRequest;
 import com.jing.common.enumeration.TripType;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -16,8 +15,8 @@ public class BookingSegmentValidator {
 
     private static final int MAX_SEGMENTS = 9;
 
-    /** Validates a new segment and returns the journey number it belongs to. */
-    public int validate(Booking booking, BookingSegmentRequest req){
+    /** Validates a new segment (built from flight-ops data) and returns the journey number it belongs to. */
+    public int validate(Booking booking, BookingSegment req, Integer requestedJourney){
         List<BookingSegment> existing = booking.getSegments();
         TripType type = booking.getTripType();
 
@@ -25,30 +24,32 @@ public class BookingSegmentValidator {
             throw new BadRequestException("A booking can have at most " + MAX_SEGMENTS + " segments");
 
         // --- the segment on its own ---
-        if (req.departureAirportId().equals(req.arrivalAirportId()))
+        if (req.getDepartureAirportId().equals(req.getArrivalAirportId()))
             throw new BadRequestException("Departure and arrival airport must be different");
-        if (!req.arrivalTime().isAfter(req.departureTime()))
+        if (!req.arrivesAt().isAfter(req.departsAt()))
             throw new BadRequestException("Arrival time must be after departure time");
-        if (!req.departureTime().isAfter(LocalDateTime.now()))
+        if (!req.departsAt().isAfter(Instant.now()))
             throw new BadRequestException("Departure time must be in the future");
 
-        if (existing.stream().anyMatch(s -> s.getFlightInstanceId().equals(req.flightInstanceId())))
-            throw new DuplicateResourceException("The flight", "id", req.flightInstanceId());
+        if (existing.stream().anyMatch(s -> s.getFlightInstanceId().equals(req.getFlightInstanceId())))
+            throw new DuplicateResourceException("The flight", "id", req.getFlightInstanceId());
 
         // --- where it sits in the booking ---
         BookingSegment last = existing.isEmpty() ? null : existing.get(existing.size() - 1);
-        int journey = resolveJourney(type, last, req.journeyNumber());
+        int journey = resolveJourney(type, last, requestedJourney);
 
         if (last != null) {
-            if (!req.departureTime().isAfter(last.getArrivalTime()))
+            // compared on the UTC clock: local times of two airports in different zones say nothing
+            // (10:00 in Tokyo is earlier than 09:00 in Phnom Penh on the same day)
+            if (!req.departsAt().isAfter(last.arrivesAt()))
                 throw new BadRequestException("Segment must depart after the previous segment arrives");
 
             if (journey == last.getJourneyNumber()) {
-                if (!req.departureAirportId().equals(last.getArrivalAirportId()))
+                if (!req.getDepartureAirportId().equals(last.getArrivalAirportId()))
                     throw new BadRequestException("A connecting segment must depart from the airport where the "
                             + "previous one landed (airport " + last.getArrivalAirportId() + ")");
             } else if (type == TripType.ROUND_TRIP
-                    && !req.departureAirportId().equals(last.getArrivalAirportId())) {
+                    && !req.getDepartureAirportId().equals(last.getArrivalAirportId())) {
                 // OPEN-JAW: delete this branch to allow returning from a different airport
                 throw new BadRequestException("The return journey must start from the airport where the "
                         + "outbound journey ended (airport " + last.getArrivalAirportId() + ")");
@@ -57,7 +58,7 @@ public class BookingSegmentValidator {
 
         // a journey must not come back to where it started (that would be a round trip)
         existing.stream().filter(s -> s.getJourneyNumber() == journey).findFirst().ifPresent(first -> {
-            if (req.arrivalAirportId().equals(first.getDepartureAirportId()))
+            if (req.getArrivalAirportId().equals(first.getDepartureAirportId()))
                 throw new BadRequestException("A journey cannot return to its starting airport. "
                         + "Use a round trip with a second journey instead");
         });

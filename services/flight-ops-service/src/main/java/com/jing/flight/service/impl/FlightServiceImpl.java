@@ -1,5 +1,6 @@
 package com.jing.flight.service.impl;
 
+import com.jing.flight.client.AirportZones;
 import com.jing.common.enumeration.FlightStatus;
 import com.jing.common.exception.BadRequestException;
 import com.jing.common.exception.DuplicateResourceException;
@@ -38,6 +39,7 @@ public class FlightServiceImpl implements FlightService {
 
     private static final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^[A-Z0-9]{2}[0-9]{1,4}$");
     private final FlightRepository flightRepository;
+    private final AirportZones airportZones;
 
 
     @Override
@@ -210,6 +212,9 @@ public class FlightServiceImpl implements FlightService {
         if (departureAirportId.equals(arrivalAirportId)) {
             throw new BadRequestException("Departure and arrival airports must be different");
         }
+        // both airports must really exist in location-service (and have a time zone, for the instances)
+        airportZones.zoneOf(departureAirportId);
+        airportZones.zoneOf(arrivalAirportId);
     }
 
     private String normalizeFlightNumber(String raw) {
