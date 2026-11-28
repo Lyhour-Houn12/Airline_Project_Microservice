@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Airline microservices - all APIs",
-    "description": "Every API of every service, through the API gateway (or straight to each service).\n\n**Folders**\n- **A. Full flow**: run first, top to bottom. Creates the data the other folders use: accounts, airline, flight, fares, a booking, a payment, tickets.\n- **B. All APIs by service**: every endpoint of every service. Each folder adds its own test data, tests it, and deletes it again.\n- **C. Gateway, Eureka and security checks**.\n- **D. Clean-up**: cancels the flow's flight and deletes the airline. Run last.\n\n**Environments**\n- *Airline - via gateway*: everything through http://localhost:8080. Use this with Docker.\n- *Airline - direct to services*: each service on its own port (8081, 8002, 5004, ...). Use this when the services run locally (IDE / mvn).\n\nBoth have the direct URLs for the `/internal/**` requests (the gateway blocks those).\n\n**Before you start**\n1. Start the system (`PAYMENT_ABA_BASE_URL=http://127.0.0.1:9 docker compose -f docker/docker-compose.yml up -d`, or the services locally).\n2. Import the collection and both environments; pick one; fill in **adminEmail** / **adminPassword** (ADMIN_EMAIL / ADMIN_PASSWORD in services/user-service/.env).\n3. Send *A. Full flow* top to bottom (or use the Runner).\n\n**Manual steps**\n- After a sign-up, put its 6-digit code into **ownerOtp** / **customerOtp** / **tmpOtp** / **resetOtp** (user-service log with MAIL_ENABLED=false, else the inbox).\n- The simulated ABA payment and the `/internal/**` requests need the services' own ports: they work with the *direct* setup; in Docker use the command in the request's description.\n- Requests marked ⚠ *Calls ABA PayWay* only work once ABA is connected.\n\nEach run makes a new owner, airline, flight and customer (the `run` variable), so it can be run again and again.",
+    "description": "Every API of every service, through the API gateway (or straight to each service).\n\n**Folders**\n- **A. Full flow**: run first, top to bottom. Creates the data the other folders use: accounts, airline, flight, fares, a booking, a payment, tickets.\n- **B. All APIs by service**: every endpoint of every service. Each folder adds its own test data, tests it, and deletes it again.\n- **C. Gateway, Eureka and security checks**.\n- **D. Clean-up**: cancels the flow's flight and deletes the airline. Run last.\n\n**Settings: no environment needed**\nThe collection carries its own settings (click the collection, then the **Variables** tab):\n- **baseUrl** = http://localhost:8080, the API gateway. Every request goes there.\n- **adminEmail / adminPassword**: fill these in (ADMIN_EMAIL / ADMIN_PASSWORD in services/user-service/.env).\n- *…Direct* (8081, 8066, …): each service's own port, only for the `/internal/**` requests, which the gateway blocks.\n\nOptional: *postman/Airline-direct.postman_environment.json* sends every request straight to each service's own port\n(when the services run locally from the IDE, without the gateway). Selecting it overrides the collection's settings.\n\n**Before you start**\n1. Start the system: `PAYMENT_ABA_BASE_URL=http://127.0.0.1:9 docker compose -f docker/docker-compose.yml up -d`.\n2. Import this collection, open its **Variables** tab, fill in **adminEmail** / **adminPassword**, and save.\n3. Send *A. Full flow* top to bottom (or use the Runner).\n\n⚠ Don't share or commit an exported copy of the collection once adminPassword is filled in.\n\n**Manual steps**\n- After a sign-up, put its 6-digit code into **ownerOtp** / **customerOtp** / **tmpOtp** / **resetOtp** (user-service log with MAIL_ENABLED=false, else the inbox).\n- The simulated ABA payment and the `/internal/**` requests need the services' own ports: they work with the *direct* setup; in Docker use the command in the request's description.\n- Requests marked ⚠ *Calls ABA PayWay* only work once ABA is connected.\n\nEach run makes a new owner, airline, flight and customer (the `run` variable), so it can be run again and again.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -12718,6 +12718,166 @@
           ]
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "description": "The API gateway. Change it here to move every request.",
+      "type": "string"
+    },
+    {
+      "key": "gatewayUrl",
+      "value": "{{baseUrl}}",
+      "type": "string"
+    },
+    {
+      "key": "eurekaUrl",
+      "value": "http://localhost:8761",
+      "type": "string"
+    },
+    {
+      "key": "userUrl",
+      "value": "{{baseUrl}}",
+      "description": "user-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "airlineCoreUrl",
+      "value": "{{baseUrl}}",
+      "description": "airline-core-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "locationUrl",
+      "value": "{{baseUrl}}",
+      "description": "location-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "flightOpsUrl",
+      "value": "{{baseUrl}}",
+      "description": "flight-ops-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "pricingUrl",
+      "value": "{{baseUrl}}",
+      "description": "pricing-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "seatUrl",
+      "value": "{{baseUrl}}",
+      "description": "seat-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "ancillaryUrl",
+      "value": "{{baseUrl}}",
+      "description": "ancillary-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "bookingUrl",
+      "value": "{{baseUrl}}",
+      "description": "booking-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "paymentUrl",
+      "value": "{{baseUrl}}",
+      "description": "payment-service, through the gateway",
+      "type": "string"
+    },
+    {
+      "key": "userDirect",
+      "value": "http://localhost:8081",
+      "description": "user-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "airlineCoreDirect",
+      "value": "http://localhost:8002",
+      "description": "airline-core-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "locationDirect",
+      "value": "http://localhost:5004",
+      "description": "location-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "flightOpsDirect",
+      "value": "http://localhost:8082",
+      "description": "flight-ops-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "pricingDirect",
+      "value": "http://localhost:8085",
+      "description": "pricing-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "seatDirect",
+      "value": "http://localhost:8088",
+      "description": "seat-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "ancillaryDirect",
+      "value": "http://localhost:8089",
+      "description": "ancillary-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "bookingDirect",
+      "value": "http://localhost:8066",
+      "description": "booking-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "paymentDirect",
+      "value": "http://localhost:8000",
+      "description": "payment-service on its own port, for /internal requests (not reachable in Docker)",
+      "type": "string"
+    },
+    {
+      "key": "adminEmail",
+      "value": "",
+      "description": "ADMIN_EMAIL from services/user-service/.env",
+      "type": "string"
+    },
+    {
+      "key": "adminPassword",
+      "value": "",
+      "description": "ADMIN_PASSWORD from services/user-service/.env",
+      "type": "string"
+    },
+    {
+      "key": "ownerOtp",
+      "value": "",
+      "description": "the owner's sign-up code",
+      "type": "string"
+    },
+    {
+      "key": "customerOtp",
+      "value": "",
+      "description": "the customer's sign-up code",
+      "type": "string"
+    },
+    {
+      "key": "tmpOtp",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resetOtp",
+      "value": "",
+      "type": "string"
     }
   ]
 }
