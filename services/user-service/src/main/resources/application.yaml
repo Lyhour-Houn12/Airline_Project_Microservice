@@ -25,7 +25,7 @@ spring:
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
     properties:
-      mail.smtp.auth: false
+      mail.smtp.auth: true        # Gmail (and every real mail server) needs the login
       mail.smtp.starttls.enable: true
 
 app:
@@ -42,8 +42,8 @@ app:
     max-failed-attempts: 5
     lockout-minutes: 15
   mail:
-    enabled: false              # false = OTP is printed in the console (dev). true = real SMTP email
-    from: ${MAIL_FROM}
+    enabled: ${MAIL_ENABLED:false}   # false = codes are printed in the log (dev). true = real email (set MAIL_* in .env)
+    from: ${MAIL_FROM:no-reply@localhost}
   admin:
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD:}
