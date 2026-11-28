@@ -23,9 +23,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/airports"
-                },
+                "url": "{{locationUrl}}/api/v1/airports",
                 "auth": {
                   "type": "noauth"
                 },
@@ -82,9 +80,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signin"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signin",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
@@ -135,9 +131,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signup"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signup",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"fullname\": \"Sky Owner\",\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}",
@@ -178,9 +172,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/verify-email"
-                },
+                "url": "{{userUrl}}/api/v1/auth/verify-email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"code\": \"{{ownerOtp}}\"\n}",
@@ -221,9 +213,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signin"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signin",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}",
@@ -274,9 +264,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/users/{{ownerUserId}}/role"
-                },
+                "url": "{{userUrl}}/api/v1/users/{{ownerUserId}}/role",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"role\": \"ROLE_AIRLINE_OWNER\"\n}",
@@ -324,9 +312,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signin"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signin",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}",
@@ -369,9 +355,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signup"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signup",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"fullname\": \"Dara Sok\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
@@ -412,9 +396,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/verify-email"
-                },
+                "url": "{{userUrl}}/api/v1/auth/verify-email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"code\": \"{{customerOtp}}\"\n}",
@@ -455,9 +437,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{userUrl}}/api/v1/auth/signin"
-                },
+                "url": "{{userUrl}}/api/v1/auth/signin",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
@@ -511,9 +491,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/cities?size=100"
-                },
+                "url": "{{locationUrl}}/api/v1/cities?size=100",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -563,9 +541,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/cities"
-                },
+                "url": "{{locationUrl}}/api/v1/cities",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"cityName\": \"Phnom Penh\",\n  \"cityCode\": \"PNH\",\n  \"countryCode\": \"KH\",\n  \"countryName\": \"Cambodia\"\n}",
@@ -628,9 +604,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/cities?size=100"
-                },
+                "url": "{{locationUrl}}/api/v1/cities?size=100",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -680,9 +654,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/cities"
-                },
+                "url": "{{locationUrl}}/api/v1/cities",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"cityName\": \"Tokyo\",\n  \"cityCode\": \"TYO\",\n  \"countryCode\": \"JP\",\n  \"countryName\": \"Japan\"\n}",
@@ -745,9 +717,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/airports?size=100"
-                },
+                "url": "{{locationUrl}}/api/v1/airports?size=100",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -797,9 +767,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/airports"
-                },
+                "url": "{{locationUrl}}/api/v1/airports",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"iataCode\": \"PNH\",\n  \"airportName\": \"Phnom Penh International Airport\",\n  \"cityId\": {{pnhCityId}},\n  \"timeZone\": \"Asia/Phnom_Penh\"\n}",
@@ -862,9 +830,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/airports?size=100"
-                },
+                "url": "{{locationUrl}}/api/v1/airports?size=100",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -914,9 +880,7 @@
                     "value": "ROLE_SYSTEM_ADMIN"
                   }
                 ],
-                "url": {
-                  "raw": "{{locationUrl}}/api/v1/airports"
-                },
+                "url": "{{locationUrl}}/api/v1/airports",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"iataCode\": \"NRT\",\n  \"airportName\": \"Narita International Airport\",\n  \"cityId\": {{tyoCityId}},\n  \"timeZone\": \"Asia/Tokyo\"\n}",
@@ -989,9 +953,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{airlineCoreUrl}}/api/v1/airlines"
-                },
+                "url": "{{airlineCoreUrl}}/api/v1/airlines",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"iataCode\": \"{{iata}}\",\n  \"icaoCode\": \"{{icao}}\",\n  \"airlineName\": \"Sky {{iata}} Airways\",\n  \"country\": \"Cambodia\",\n  \"supportEmail\": \"help@sky{{run}}.example.com\"\n}",
@@ -1049,9 +1011,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{airlineCoreUrl}}/api/v1/aircrafts"
-                },
+                "url": "{{airlineCoreUrl}}/api/v1/aircrafts",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"code\": \"A320-{{run}}\",\n  \"model\": \"A320neo\",\n  \"manufacturer\": \"Airbus\",\n  \"seatingCapacity\": 60,\n  \"economySeats\": 60,\n  \"status\": \"ACTIVE\",\n  \"isAvailable\": true\n}",
@@ -1109,9 +1069,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/cabin-classes"
-                },
+                "url": "{{seatUrl}}/api/v1/cabin-classes",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"name\": \"Economy\",\n  \"code\": \"Y\",\n  \"cabinClassType\": \"ECONOMY\",\n  \"aircraftId\": {{aircraftId}},\n  \"isActive\": true,\n  \"isBookable\": true\n}",
@@ -1169,9 +1127,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/seat-maps"
-                },
+                "url": "{{seatUrl}}/api/v1/seat-maps",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"name\": \"A320 Economy\",\n  \"totalRows\": 10,\n  \"leftSeatsPerRow\": 3,\n  \"rightSeatsPerRow\": 3,\n  \"airlineId\": {{airlineId}},\n  \"cabinClassId\": {{cabinClassId}}\n}",
@@ -1229,9 +1185,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/seats/generate"
-                },
+                "url": "{{seatUrl}}/api/v1/seats/generate",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"seatMapId\": {{seatMapId}},\n  \"startRow\": 1\n}",
@@ -1293,9 +1247,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{flightOpsUrl}}/api/v1/flights"
-                },
+                "url": "{{flightOpsUrl}}/api/v1/flights",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"flightNumber\": \"{{flightNumber}}\",\n  \"aircraftId\": {{aircraftId}},\n  \"departureAirportId\": {{pnhAirportId}},\n  \"arrivalAirportId\": {{nrtAirportId}}\n}",
@@ -1353,9 +1305,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{flightOpsUrl}}/api/v1/flight-schedules"
-                },
+                "url": "{{flightOpsUrl}}/api/v1/flight-schedules",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"flightId\": {{flightId}},\n  \"departureTime\": \"09:00:00\",\n  \"arrivalTime\": \"17:00:00\",\n  \"startDate\": \"{{flightDay}}\",\n  \"endDate\": \"{{flightDay}}\"\n}",
@@ -1413,9 +1363,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{flightOpsUrl}}/api/v1/flight-schedules/{{scheduleId}}/generate-instances"
-                },
+                "url": "{{flightOpsUrl}}/api/v1/flight-schedules/{{scheduleId}}/generate-instances",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"totalSeats\": 60\n}",
@@ -1467,9 +1415,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{flightOpsUrl}}/api/v1/flight-instances?flightId={{flightId}}&onDate={{flightDay}}"
-                },
+                "url": "{{flightOpsUrl}}/api/v1/flight-instances?flightId={{flightId}}&onDate={{flightDay}}",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -1518,9 +1464,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/flight-instance-cabins"
-                },
+                "url": "{{seatUrl}}/api/v1/flight-instance-cabins",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}},\n  \"cabins\": [\n    {\n      \"cabinClassId\": {{cabinClassId}}\n    }\n  ]\n}",
@@ -1578,9 +1522,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/seat-instances/generate"
-                },
+                "url": "{{seatUrl}}/api/v1/seat-instances/generate",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}}\n}",
@@ -1636,9 +1578,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{pricingUrl}}/api/v1/fares"
-                },
+                "url": "{{pricingUrl}}/api/v1/fares",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"fareName\": \"Economy Saver\",\n  \"fareLabel\": \"Saver\",\n  \"rbdCode\": \"V\",\n  \"airlineId\": {{airlineId}},\n  \"flightId\": {{flightId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"cabinClass\": \"ECONOMY\",\n  \"baseFare\": 250.0,\n  \"taxesAndFees\": 35.0,\n  \"airlineFees\": 0,\n  \"currency\": \"USD\"\n}",
@@ -1696,9 +1636,7 @@
                     "value": "ROLE_AIRLINE_OWNER"
                   }
                 ],
-                "url": {
-                  "raw": "{{pricingUrl}}/api/v1/fares"
-                },
+                "url": "{{pricingUrl}}/api/v1/fares",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"fareName\": \"Economy Flex\",\n  \"fareLabel\": \"Flex\",\n  \"rbdCode\": \"Y\",\n  \"airlineId\": {{airlineId}},\n  \"flightId\": {{flightId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"cabinClass\": \"ECONOMY\",\n  \"baseFare\": 320.0,\n  \"taxesAndFees\": 35.0,\n  \"airlineFees\": 0,\n  \"currency\": \"USD\",\n  \"freeDateChange\": true,\n  \"fullRefund\": true\n}",
@@ -1750,9 +1688,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=2&children=1&sort=PRICE"
-                },
+                "url": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=2&children=1&sort=PRICE",
                 "auth": {
                   "type": "noauth"
                 },
@@ -1804,9 +1740,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/draft"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/draft",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"tripType\": \"ONE_WAY\",\n  \"currency\": \"USD\",\n  \"flexibleTicket\": false,\n  \"contactInfo\": {\n    \"email\": \"{{customerEmail}}\",\n    \"phone\": \"+85512345678\"\n  }\n}",
@@ -1865,9 +1799,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Dara\",\n  \"lastName\": \"Sok\",\n  \"dateOfBirth\": \"14/02/1988\",\n  \"gender\": \"MALE\",\n  \"passportNumber\": \"N01234567\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -1923,9 +1855,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Sreyneang\",\n  \"lastName\": \"Sok\",\n  \"dateOfBirth\": \"03/09/1990\",\n  \"gender\": \"FEMALE\",\n  \"passportNumber\": \"N07654321\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -1981,9 +1911,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passengers",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"passengerType\": \"CHILD\",\n  \"firstName\": \"Visal\",\n  \"lastName\": \"Sok\",\n  \"dateOfBirth\": \"21/06/2018\",\n  \"gender\": \"MALE\",\n  \"passportNumber\": \"N05551234\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -2039,9 +1967,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/segments"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/segments",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}},\n  \"fareId\": {{fareId}}\n}",
@@ -2088,9 +2014,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{flightInstanceId}}"
-                },
+                "url": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{flightInstanceId}}",
                 "auth": {
                   "type": "noauth"
                 },
@@ -2138,9 +2062,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat1}}/seat"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat1}}/seat",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"seatInstanceId\": {{seat1}}\n}",
@@ -2196,9 +2118,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat2}}/seat"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat2}}/seat",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"seatInstanceId\": {{seat2}}\n}",
@@ -2254,9 +2174,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat3}}/seat"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/passenger-segments/{{passengerSeat3}}/seat",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"seatInstanceId\": {{seat3}}\n}",
@@ -2308,9 +2226,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -2366,9 +2282,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{paymentUrl}}/api/v1/payments"
-                },
+                "url": "{{paymentUrl}}/api/v1/payments",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"bookingId\": {{bookingId}},\n  \"method\": \"ABA_PAYWAY\",\n  \"firstName\": \"Dara\",\n  \"lastName\": \"Sok\",\n  \"email\": \"{{customerEmail}}\"\n}",
@@ -2419,9 +2333,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingDirect}}/internal/v1/bookings/{{bookingId}}/payment-result"
-                },
+                "url": "{{bookingDirect}}/internal/v1/bookings/{{bookingId}}/payment-result",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"paymentId\": {{paymentId}},\n  \"status\": \"SUCCESS\"\n}",
@@ -2473,9 +2385,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -2521,9 +2431,7 @@
                     "value": "ROLE_CUSTOMER"
                   }
                 ],
-                "url": {
-                  "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}"
-                },
+                "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}",
                 "auth": {
                   "type": "bearer",
                   "bearer": [
@@ -2559,9 +2467,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": {
-                  "raw": "{{seatUrl}}/api/v1/flight-instance-cabins/flight-instance/{{flightInstanceId}}"
-                },
+                "url": "{{seatUrl}}/api/v1/flight-instance-cabins/flight-instance/{{flightInstanceId}}",
                 "auth": {
                   "type": "noauth"
                 },
@@ -2612,9 +2518,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/signup"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/signup",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"fullname\": \"Temp User\",\n  \"email\": \"{{tmpEmail}}\",\n  \"password\": \"{{tmpPassword}}\"\n}",
@@ -2655,9 +2559,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/verify-email/resend"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/verify-email/resend",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{tmpEmail}}\"\n}",
@@ -2698,9 +2600,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/verify-email"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/verify-email",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{tmpEmail}}\",\n  \"code\": \"{{tmpOtp}}\"\n}",
@@ -2741,9 +2641,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/signin"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/signin",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
@@ -2787,9 +2685,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/refresh"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/refresh",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"refreshToken\": \"{{adminRefreshToken}}\"\n}",
@@ -2833,9 +2729,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/forgot-password"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/forgot-password",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{tmpEmail}}\"\n}",
@@ -2876,9 +2770,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/reset-password"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/reset-password",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{tmpEmail}}\",\n  \"code\": \"{{resetOtp}}\",\n  \"newPassword\": \"New-{{tmpPassword}}\"\n}",
@@ -2919,9 +2811,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/signin"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/signin",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
@@ -2964,9 +2854,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/auth/logout"
-                    },
+                    "url": "{{userUrl}}/api/v1/auth/logout",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"refreshToken\": \"{{spareRefreshToken}}\"\n}",
@@ -3017,9 +2905,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/users/me"
-                    },
+                    "url": "{{userUrl}}/api/v1/users/me",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3066,9 +2952,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/users/me/password"
-                    },
+                    "url": "{{userUrl}}/api/v1/users/me/password",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"currentPassword\": \"{{customerPassword}}\",\n  \"newPassword\": \"Changed-{{customerPassword}}\"\n}",
@@ -3124,9 +3008,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/users/me/password"
-                    },
+                    "url": "{{userUrl}}/api/v1/users/me/password",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"currentPassword\": \"Changed-{{customerPassword}}\",\n  \"newPassword\": \"{{customerPassword}}\"\n}",
@@ -3178,9 +3060,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/users?page=1&size=20"
-                    },
+                    "url": "{{userUrl}}/api/v1/users?page=1&size=20",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3227,9 +3107,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{userUrl}}/api/v1/users/{{ownerUserId}}/role"
-                    },
+                    "url": "{{userUrl}}/api/v1/users/{{ownerUserId}}/role",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"role\": \"ROLE_AIRLINE_OWNER\"\n}",
@@ -3285,9 +3163,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines?page=1&size=10"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines?page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3315,9 +3191,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines?keyword=Sky"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines?keyword=Sky",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3345,9 +3219,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines/dropdown"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines/dropdown",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3375,9 +3247,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3413,9 +3283,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines/me"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines/me",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3462,9 +3330,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines/me"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines/me",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"iataCode\": \"{{iata}}\",\n  \"icaoCode\": \"{{icao}}\",\n  \"airlineName\": \"Sky {{iata}} Airways\",\n  \"country\": \"Cambodia\",\n  \"supportEmail\": \"help@sky{{run}}.example.com\",\n  \"alias\": \"Sky\",\n  \"website\": \"https://sky.example.com\"\n}",
@@ -3516,9 +3382,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}/status?status=ACTIVE"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}/status?status=ACTIVE",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3571,9 +3435,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"code\": \"ATR-{{run}}\",\n  \"model\": \"ATR 72-600\",\n  \"manufacturer\": \"ATR\",\n  \"seatingCapacity\": 70,\n  \"economySeats\": 70,\n  \"status\": \"ACTIVE\",\n  \"isAvailable\": true,\n  \"rangeKm\": 1500,\n  \"yearOfManufacture\": 2020\n}",
@@ -3627,9 +3489,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/me"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/me",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3664,9 +3524,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts?page=1&size=10"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts?page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3694,9 +3552,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -3736,9 +3592,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"code\": \"ATR-{{run}}\",\n  \"model\": \"ATR 72-600\",\n  \"manufacturer\": \"ATR\",\n  \"seatingCapacity\": 70,\n  \"economySeats\": 70,\n  \"status\": \"ACTIVE\",\n  \"isAvailable\": true,\n  \"rangeKm\": 1600,\n  \"yearOfManufacture\": 2020\n}",
@@ -3790,9 +3644,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}/status?status=ACTIVE"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}/status?status=ACTIVE",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3835,9 +3687,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/{{tmpAircraftId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3884,9 +3734,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"code\": \"ATR2-{{run}}\",\n  \"model\": \"ATR 72-600\",\n  \"manufacturer\": \"ATR\",\n  \"seatingCapacity\": 70,\n  \"economySeats\": 70,\n  \"status\": \"ACTIVE\",\n  \"isAvailable\": true,\n  \"rangeKm\": 1500,\n  \"yearOfManufacture\": 2020\n}",
@@ -3940,9 +3788,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreUrl}}/api/v1/aircrafts/admin/{{tmpAircraft2Id}}"
-                    },
+                    "url": "{{airlineCoreUrl}}/api/v1/aircrafts/admin/{{tmpAircraft2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -3983,9 +3829,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{airlineCoreDirect}}/internal/v1/airlines/by-owner/{{ownerUserId}}"
-                    },
+                    "url": "{{airlineCoreDirect}}/internal/v1/airlines/by-owner/{{ownerUserId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4037,9 +3881,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"cityName\": \"Test City {{run6}}\",\n  \"cityCode\": \"T{{run6}}\",\n  \"countryCode\": \"KH\",\n  \"countryName\": \"Cambodia\"\n}",
@@ -4097,9 +3939,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/bulk"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/bulk",
                     "body": {
                       "mode": "raw",
                       "raw": "[\n  {\n    \"cityName\": \"Bulk City B {{run6}}\",\n    \"cityCode\": \"B{{run6}}\",\n    \"countryCode\": \"KH\",\n    \"countryName\": \"Cambodia\"\n  },\n  {\n    \"cityName\": \"Bulk City D {{run6}}\",\n    \"cityCode\": \"D{{run6}}\",\n    \"countryCode\": \"KH\",\n    \"countryName\": \"Cambodia\"\n  }\n]",
@@ -4146,9 +3986,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4176,9 +4014,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities?page=1&size=10"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities?page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4206,9 +4042,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/search?keyword=Phnom"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/search?keyword=Phnom",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4236,9 +4070,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/exists/PNH"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/exists/PNH",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4278,9 +4110,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"cityName\": \"Test City {{run6}} (renamed)\",\n  \"cityCode\": \"T{{run6}}\",\n  \"countryCode\": \"KH\",\n  \"countryName\": \"Cambodia\"\n}",
@@ -4342,9 +4172,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"iataCode\": \"{{tmpAirportIata}}\",\n  \"airportName\": \"Test Airport {{run6}}\",\n  \"cityId\": {{tmpCityId}},\n  \"timeZone\": \"Asia/Phnom_Penh\"\n}",
@@ -4402,9 +4230,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/bulk"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/bulk",
                     "body": {
                       "mode": "raw",
                       "raw": "[\n  {\n    \"iataCode\": \"{{bulkAirportIata1}}\",\n    \"airportName\": \"Bulk Airport 1 {{run6}}\",\n    \"cityId\": {{tmpCityId}},\n    \"timeZone\": \"Asia/Phnom_Penh\"\n  },\n  {\n    \"iataCode\": \"{{bulkAirportIata2}}\",\n    \"airportName\": \"Bulk Airport 2 {{run6}}\",\n    \"cityId\": {{tmpCityId}},\n    \"timeZone\": \"Asia/Phnom_Penh\"\n  }\n]",
@@ -4451,9 +4277,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4481,9 +4305,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports?page=1&size=10"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports?page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4511,9 +4333,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports?keyword=Narita"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports?keyword=Narita",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4541,9 +4361,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/city/{{pnhCityId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/city/{{pnhCityId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -4583,9 +4401,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"iataCode\": \"{{tmpAirportIata}}\",\n  \"airportName\": \"Test Airport {{run6}} (renamed)\",\n  \"cityId\": {{tmpCityId}},\n  \"timeZone\": \"Asia/Phnom_Penh\"\n}",
@@ -4637,9 +4453,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/{{tmpAirportId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4682,9 +4496,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/{{bulkAirport1Id}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/{{bulkAirport1Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4727,9 +4539,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/airports/{{bulkAirport2Id}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/airports/{{bulkAirport2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4778,9 +4588,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/{{tmpCityId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4823,9 +4631,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/{{bulkCity1Id}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/{{bulkCity1Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4868,9 +4674,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{locationUrl}}/api/v1/cities/{{bulkCity2Id}}"
-                    },
+                    "url": "{{locationUrl}}/api/v1/cities/{{bulkCity2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -4929,9 +4733,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightNumber\": \"{{iata}}901\",\n  \"aircraftId\": {{aircraftId}},\n  \"departureAirportId\": {{pnhAirportId}},\n  \"arrivalAirportId\": {{nrtAirportId}}\n}",
@@ -4989,9 +4791,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/batch"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/batch",
                     "body": {
                       "mode": "raw",
                       "raw": "[\n  {\n    \"flightNumber\": \"{{iata}}902\",\n    \"aircraftId\": {{aircraftId}},\n    \"departureAirportId\": {{pnhAirportId}},\n    \"arrivalAirportId\": {{nrtAirportId}}\n  },\n  {\n    \"flightNumber\": \"{{iata}}903\",\n    \"aircraftId\": {{aircraftId}},\n    \"departureAirportId\": {{pnhAirportId}},\n    \"arrivalAirportId\": {{nrtAirportId}}\n  }\n]",
@@ -5038,9 +4838,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{flightId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{flightId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5068,9 +4866,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/number/{{flightNumber}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/number/{{flightNumber}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5098,9 +4894,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights?airlineId={{airlineId}}&page=1&size=10"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights?airlineId={{airlineId}}&page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5128,9 +4922,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsDirect}}/api/v1/flights/by-ids?ids={{flightId}},{{tmpFlightId}}"
-                    },
+                    "url": "{{flightOpsDirect}}/api/v1/flights/by-ids?ids={{flightId}},{{tmpFlightId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5170,9 +4962,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightNumber\": \"{{iata}}901\",\n  \"aircraftId\": {{aircraftId}},\n  \"departureAirportId\": {{pnhAirportId}},\n  \"arrivalAirportId\": {{nrtAirportId}}\n}",
@@ -5224,9 +5014,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}/status?status=SCHEDULED"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}/status?status=SCHEDULED",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5269,9 +5057,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{tmpFlightId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5314,9 +5100,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{bulkFlight1Id}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{bulkFlight1Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5359,9 +5143,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flights/{{bulkFlight2Id}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flights/{{bulkFlight2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5414,9 +5196,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-schedules"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-schedules",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightId\": {{flightId}},\n  \"departureTime\": \"14:00:00\",\n  \"arrivalTime\": \"22:00:00\",\n  \"startDate\": \"{{laterDay}}\",\n  \"endDate\": \"{{laterDayEnd}}\",\n  \"operatingDays\": [\n    \"MONDAY\",\n    \"WEDNESDAY\",\n    \"FRIDAY\"\n  ]\n}",
@@ -5470,9 +5250,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-schedules?flightId={{flightId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-schedules?flightId={{flightId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5515,9 +5293,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-schedules/{{scheduleId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-schedules/{{scheduleId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5564,9 +5340,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-schedules/{{tmpScheduleId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-schedules/{{tmpScheduleId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightId\": {{flightId}},\n  \"departureTime\": \"15:00:00\",\n  \"arrivalTime\": \"23:00:00\",\n  \"startDate\": \"{{laterDay}}\",\n  \"endDate\": \"{{laterDayEnd}}\"\n}",
@@ -5618,9 +5392,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-schedules/{{tmpScheduleId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-schedules/{{tmpScheduleId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5673,9 +5445,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightId\": {{flightId}},\n  \"scheduleId\": {{scheduleId}},\n  \"departureDateTime\": \"{{flightDay}}T20:00:00\",\n  \"arrivalDateTime\": \"{{nextDay}}T04:00:00\",\n  \"totalSeats\": 60\n}",
@@ -5721,9 +5491,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances?flightId={{flightId}}&page=1&size=10"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances?flightId={{flightId}}&page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5751,9 +5519,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances?departureAirportId={{pnhAirportId}}&arrivalAirportId={{nrtAirportId}}&onDate={{flightDay}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances?departureAirportId={{pnhAirportId}}&arrivalAirportId={{nrtAirportId}}&onDate={{flightDay}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5781,9 +5547,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{flightInstanceId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{flightInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5811,9 +5575,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsDirect}}/api/v1/flight-instances/batch?ids={{flightInstanceId}},{{tmpInstanceId}}"
-                    },
+                    "url": "{{flightOpsDirect}}/api/v1/flight-instances/batch?ids={{flightInstanceId}},{{tmpInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -5853,9 +5615,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightId\": {{flightId}},\n  \"scheduleId\": {{scheduleId}},\n  \"departureDateTime\": \"{{flightDay}}T20:00:00\",\n  \"arrivalDateTime\": \"{{nextDay}}T04:00:00\",\n  \"totalSeats\": 60,\n  \"gate\": \"A12\"\n}",
@@ -5907,9 +5667,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}/status?status=DELAYED&reason=Late%20aircraft"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}/status?status=DELAYED&reason=Late%20aircraft",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -5952,9 +5710,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}/status?status=SCHEDULED"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstanceId}}/status?status=SCHEDULED",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -6001,9 +5757,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightId\": {{flightId}},\n  \"scheduleId\": {{scheduleId}},\n  \"departureDateTime\": \"{{flightDay}}T22:00:00\",\n  \"arrivalDateTime\": \"{{nextDay}}T06:00:00\",\n  \"totalSeats\": 60\n}",
@@ -6057,9 +5811,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstance2Id}}"
-                    },
+                    "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{tmpInstance2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -6118,9 +5870,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"fareName\": \"Economy Promo\",\n  \"fareLabel\": \"Promo\",\n  \"rbdCode\": \"Q\",\n  \"airlineId\": {{airlineId}},\n  \"flightId\": {{flightId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"cabinClass\": \"ECONOMY\",\n  \"baseFare\": 199.0,\n  \"taxesAndFees\": 35.0,\n  \"airlineFees\": 0,\n  \"currency\": \"USD\"\n}",
@@ -6166,9 +5916,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares/{{saverFareId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares/{{saverFareId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6196,9 +5944,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares?flightId={{flightId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares?flightId={{flightId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6226,9 +5972,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares?cabinClass=ECONOMY&minPrice=100&maxPrice=400&currency=USD"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares?cabinClass=ECONOMY&minPrice=100&maxPrice=400&currency=USD",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6268,9 +6012,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares/{{tmpFareId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares/{{tmpFareId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"fareName\": \"Economy Promo\",\n  \"fareLabel\": \"Promo\",\n  \"rbdCode\": \"Q\",\n  \"airlineId\": {{airlineId}},\n  \"flightId\": {{flightId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"cabinClass\": \"ECONOMY\",\n  \"baseFare\": 189.0,\n  \"taxesAndFees\": 35.0,\n  \"airlineFees\": 0,\n  \"currency\": \"USD\"\n}",
@@ -6322,9 +6064,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fares/{{tmpFareId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fares/{{tmpFareId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -6377,9 +6117,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fare-rules"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fare-rules",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"ruleName\": \"Saver rules\",\n  \"fareId\": {{saverFareId}},\n  \"airlineId\": {{airlineId}},\n  \"isRefundable\": false,\n  \"changeFee\": 50.0,\n  \"cancellationFee\": 100.0,\n  \"refundDeadlineDays\": 7,\n  \"changeDeadlineHours\": 24,\n  \"isChangeable\": true\n}",
@@ -6425,9 +6163,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6455,9 +6191,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fare-rules/fare/{{saverFareId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fare-rules/fare/{{saverFareId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6497,9 +6231,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"ruleName\": \"Saver rules\",\n  \"fareId\": {{saverFareId}},\n  \"airlineId\": {{airlineId}},\n  \"isRefundable\": false,\n  \"changeFee\": 40.0,\n  \"cancellationFee\": 100.0,\n  \"refundDeadlineDays\": 7,\n  \"changeDeadlineHours\": 24,\n  \"isChangeable\": true\n}",
@@ -6551,9 +6283,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/fare-rules/{{fareRulesId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -6606,9 +6336,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/baggage-policies"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/baggage-policies",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"Saver baggage\",\n  \"fareId\": {{saverFareId}},\n  \"cabinBaggageMaxWeight\": 7.0,\n  \"cabinBaggagePieces\": 1,\n  \"checkInBaggageMaxWeight\": 20.0,\n  \"checkInBaggagePieces\": 1,\n  \"priorityBaggage\": false,\n  \"extraBaggagePurchasable\": true\n}",
@@ -6654,9 +6382,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6684,9 +6410,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/baggage-policies/fare/{{saverFareId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/baggage-policies/fare/{{saverFareId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6726,9 +6450,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"Saver baggage\",\n  \"fareId\": {{saverFareId}},\n  \"cabinBaggageMaxWeight\": 7.0,\n  \"cabinBaggagePieces\": 1,\n  \"checkInBaggageMaxWeight\": 23.0,\n  \"checkInBaggagePieces\": 1,\n  \"priorityBaggage\": false,\n  \"extraBaggagePurchasable\": true\n}",
@@ -6780,9 +6502,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}"
-                    },
+                    "url": "{{pricingUrl}}/api/v1/baggage-policies/{{baggagePolicyId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -6841,9 +6561,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"Business\",\n  \"code\": \"J\",\n  \"cabinClassType\": \"BUSINESS\",\n  \"aircraftId\": {{aircraftId}},\n  \"isActive\": true,\n  \"isBookable\": true,\n  \"displayOrder\": 1\n}",
@@ -6901,9 +6619,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"Premium Economy\",\n  \"code\": \"W\",\n  \"cabinClassType\": \"PREMIUM_ECONOMY\",\n  \"aircraftId\": {{aircraftId}},\n  \"isActive\": true,\n  \"isBookable\": true,\n  \"displayOrder\": 1\n}",
@@ -6949,9 +6665,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes/{{cabinClassId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes/{{cabinClassId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -6979,9 +6693,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes?page=1&size=10"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes?page=1&size=10",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7009,9 +6721,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes/aircraft/{{aircraftId}}/type/ECONOMY"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes/aircraft/{{aircraftId}}/type/ECONOMY",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7051,9 +6761,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClassId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClassId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"Business\",\n  \"code\": \"J\",\n  \"cabinClassType\": \"BUSINESS\",\n  \"aircraftId\": {{aircraftId}},\n  \"isActive\": true,\n  \"isBookable\": true,\n  \"displayOrder\": 1,\n  \"description\": \"Lie-flat seats\"\n}",
@@ -7115,9 +6823,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"A320 Business\",\n  \"totalRows\": 2,\n  \"leftSeatsPerRow\": 2,\n  \"rightSeatsPerRow\": 2,\n  \"airlineId\": {{airlineId}},\n  \"cabinClassId\": {{tmpCabinClassId}}\n}",
@@ -7175,9 +6881,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"A320 Premium\",\n  \"totalRows\": 1,\n  \"leftSeatsPerRow\": 2,\n  \"rightSeatsPerRow\": 2,\n  \"airlineId\": {{airlineId}},\n  \"cabinClassId\": {{tmpCabinClass2Id}}\n}",
@@ -7223,9 +6927,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps/{{seatMapId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps/{{seatMapId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7253,9 +6955,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps/cabin/{{cabinClassId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps/cabin/{{cabinClassId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7283,9 +6983,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps?airlineId={{airlineId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps?airlineId={{airlineId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7325,9 +7023,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMapId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMapId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"name\": \"A320 Business (renamed)\",\n  \"totalRows\": 2,\n  \"leftSeatsPerRow\": 2,\n  \"rightSeatsPerRow\": 2,\n  \"airlineId\": {{airlineId}},\n  \"cabinClassId\": {{tmpCabinClassId}}\n}",
@@ -7389,9 +7085,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"seatMapId\": {{tmpSeatMapId}},\n  \"seatRow\": 20,\n  \"columnLetter\": \"A\",\n  \"seatType\": \"WINDOW\"\n}",
@@ -7449,9 +7143,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/bulk"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/bulk",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"seats\": [\n    {\n      \"seatMapId\": {{tmpSeatMapId}},\n      \"seatRow\": 20,\n      \"columnLetter\": \"B\",\n      \"seatType\": \"AISLE\"\n    },\n    {\n      \"seatMapId\": {{tmpSeatMapId}},\n      \"seatRow\": 20,\n      \"columnLetter\": \"C\",\n      \"seatType\": \"AISLE\"\n    },\n    {\n      \"seatMapId\": {{tmpSeatMapId}},\n      \"seatRow\": 20,\n      \"columnLetter\": \"D\",\n      \"seatType\": \"WINDOW\"\n    }\n  ]\n}",
@@ -7507,9 +7199,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/generate"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/generate",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"seatMapId\": {{tmpSeatMap2Id}},\n  \"startRow\": 30\n}",
@@ -7553,9 +7243,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7583,9 +7271,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats?seatMapId={{seatMapId}}&size=60"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats?seatMapId={{seatMapId}}&size=60",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7613,9 +7299,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats?aircraftId={{aircraftId}}&seatType=WINDOW"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats?aircraftId={{aircraftId}}&seatType=WINDOW",
                     "auth": {
                       "type": "noauth"
                     },
@@ -7655,9 +7339,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"seatType\": \"WINDOW\",\n  \"hasPowerOutlet\": true,\n  \"seatPitch\": 60,\n  \"seatWidth\": 21\n}",
@@ -7709,9 +7391,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/block"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/block",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -7754,9 +7434,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/unblock"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/unblock",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -7799,9 +7477,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/deactivate"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/deactivate",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -7844,9 +7520,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/activate"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}/activate",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -7889,9 +7563,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seats/{{tmpSeatId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -7944,9 +7616,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{tmpInstanceId}},\n  \"cabins\": [\n    {\n      \"cabinClassId\": {{cabinClassId}},\n      \"totalSeats\": 60\n    }\n  ]\n}",
@@ -7992,9 +7662,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins/{{flightInstanceCabinId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins/{{flightInstanceCabinId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8022,9 +7690,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins/flight-instance/{{flightInstanceId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins/flight-instance/{{flightInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8052,9 +7718,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins?hasAvailability=true&cabinClassType=ECONOMY"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins?hasAvailability=true&cabinClassType=ECONOMY",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8094,9 +7758,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins/{{tmpInstanceCabinId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins/{{tmpInstanceCabinId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"totalSeats\": 50,\n  \"isBookable\": true\n}",
@@ -8158,9 +7820,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/generate"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/generate",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{tmpInstanceId}}\n}",
@@ -8204,9 +7864,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8237,9 +7895,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}/summary"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}/summary",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8267,9 +7923,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -8309,9 +7963,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/block"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/block",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"reason\": \"Broken tray table\"\n}",
@@ -8363,9 +8015,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/unblock"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/unblock",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -8412,9 +8062,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/surcharge"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/{{tmpSeatInstanceId}}/surcharge",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"surcharge\": 15.0\n}",
@@ -8468,9 +8116,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/{{tmpSeatInstance2Id}}/hold"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/{{tmpSeatInstance2Id}}/hold",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{tmpInstanceId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"holdUntil\": \"{{holdUntil}}\"\n}",
@@ -8511,9 +8157,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/release"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/release",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"seatInstanceIds\": [\n    {{tmpSeatInstance2Id}}\n  ]\n}",
@@ -8554,9 +8198,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/cabin-reservations"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/cabin-reservations",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{tmpInstanceId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"seats\": 2,\n  \"holdUntil\": \"{{holdUntil}}\"\n}",
@@ -8597,9 +8239,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/{{tmpSeatInstance2Id}}/hold"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/{{tmpSeatInstance2Id}}/hold",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{tmpInstanceId}},\n  \"cabinClassId\": {{cabinClassId}},\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"holdUntil\": \"{{holdUntil}}\"\n}",
@@ -8640,9 +8280,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/confirm"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/confirm",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"seatInstanceIds\": [\n    {{tmpSeatInstance2Id}}\n  ]\n}",
@@ -8683,9 +8321,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/cabin-reservations/confirm"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/cabin-reservations/confirm",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"holdReference\": \"POSTMAN{{run}}\",\n  \"cabins\": [\n    {\n      \"flightInstanceId\": {{tmpInstanceId}},\n      \"cabinClassId\": {{cabinClassId}},\n      \"seats\": 2\n    }\n  ]\n}",
@@ -8726,9 +8362,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatDirect}}/internal/v1/seat-instances/release"
-                    },
+                    "url": "{{seatDirect}}/internal/v1/seat-instances/release",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"holdReference\": \"POSTMAN{{run}}\"\n}",
@@ -8779,9 +8413,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-instances/flight-instance/{{tmpInstanceId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -8824,9 +8456,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/flight-instance-cabins/{{tmpInstanceCabinId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/flight-instance-cabins/{{tmpInstanceCabinId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -8869,9 +8499,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMapId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMapId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -8914,9 +8542,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMap2Id}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/seat-maps/{{tmpSeatMap2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -8959,9 +8585,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClassId}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClassId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9004,9 +8628,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClass2Id}}"
-                    },
+                    "url": "{{seatUrl}}/api/v1/cabin-classes/{{tmpCabinClass2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9061,9 +8683,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals",
                     "body": {
                       "mode": "formdata",
                       "formdata": [
@@ -9118,9 +8738,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9148,9 +8766,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals?airlineId={{airlineId}}&dietaryType=HALAL"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals?airlineId={{airlineId}}&dietaryType=HALAL",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9190,9 +8806,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"airlineId\": {{airlineId}},\n  \"code\": \"MEAL{{run6}}\",\n  \"name\": \"Chicken amok\",\n  \"description\": \"Khmer curry with rice\",\n  \"mealType\": \"LUNCH\",\n  \"dietaryType\": \"HALAL\",\n  \"cuisine\": \"Khmer\",\n  \"calories\": 650,\n  \"allergens\": \"fish\",\n  \"basePrice\": 11.0,\n  \"currency\": \"USD\",\n  \"isActive\": true\n}",
@@ -9244,9 +8858,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/status?active=true"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/status?active=true",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9289,9 +8901,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/image"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/image",
                     "body": {
                       "mode": "formdata",
                       "formdata": [
@@ -9344,9 +8954,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/image"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}/image",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9399,9 +9007,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}},\n  \"meals\": [\n    {\n      \"mealId\": {{mealId}},\n      \"price\": 10.0,\n      \"totalQuantity\": 40,\n      \"orderCutoffHours\": 24,\n      \"isActive\": true\n    }\n  ]\n}",
@@ -9447,9 +9053,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9477,9 +9081,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals?flightInstanceId={{flightInstanceId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals?flightInstanceId={{flightInstanceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9519,9 +9121,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"price\": 9.0,\n  \"totalQuantity\": 35,\n  \"orderCutoffHours\": 12,\n  \"isActive\": true\n}",
@@ -9573,9 +9173,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}/status?active=true"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}/status?active=true",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9618,9 +9216,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-instance-meals/{{flightInstanceMealId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9673,9 +9269,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"airlineId\": {{airlineId}},\n  \"code\": \"BAG{{run6}}\",\n  \"name\": \"Extra 10 kg bag\",\n  \"description\": \"One more checked bag\",\n  \"type\": \"EXTRA_BAGGAGE\",\n  \"basePrice\": 25.0,\n  \"currency\": \"USD\",\n  \"isActive\": true\n}",
@@ -9721,9 +9315,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9751,9 +9343,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries?airlineId={{airlineId}}&type=EXTRA_BAGGAGE"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries?airlineId={{airlineId}}&type=EXTRA_BAGGAGE",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9793,9 +9383,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"airlineId\": {{airlineId}},\n  \"code\": \"BAG{{run6}}\",\n  \"name\": \"Extra 10 kg bag\",\n  \"description\": \"One more checked bag\",\n  \"type\": \"EXTRA_BAGGAGE\",\n  \"basePrice\": 22.0,\n  \"currency\": \"USD\",\n  \"isActive\": true\n}",
@@ -9847,9 +9435,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}/status?active=true"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}/status?active=true",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -9902,9 +9488,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceCabinId\": {{flightInstanceCabinId}},\n  \"ancillaries\": [\n    {\n      \"ancillaryId\": {{ancillaryId}},\n      \"price\": 20.0,\n      \"isFree\": false,\n      \"totalQuantity\": 50,\n      \"isActive\": true\n    }\n  ]\n}",
@@ -9950,9 +9534,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -9980,9 +9562,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries?flightInstanceCabinId={{flightInstanceCabinId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries?flightInstanceCabinId={{flightInstanceCabinId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10022,9 +9602,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"price\": 18.0,\n  \"isFree\": false,\n  \"totalQuantity\": 45,\n  \"isActive\": true\n}",
@@ -10076,9 +9654,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}/status?active=true"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}/status?active=true",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10121,9 +9697,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/flight-cabin-ancillaries/{{flightCabinAncillaryId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10176,9 +9750,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"airlineId\": {{airlineId}},\n  \"code\": \"INS{{run6}}\",\n  \"name\": \"Travel cover\",\n  \"description\": \"Medical and trip cover\",\n  \"provider\": \"Forte Insurance\",\n  \"coverageType\": \"TRAVEL\",\n  \"coverageAmount\": 10000.0,\n  \"premium\": 15.0,\n  \"currency\": \"USD\",\n  \"minAge\": 0,\n  \"maxAge\": 80,\n  \"termsUrl\": \"https://example.com/terms\",\n  \"isActive\": true\n}",
@@ -10224,9 +9796,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10254,9 +9824,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages?airlineId={{airlineId}}&eligibleAge=30"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages?airlineId={{airlineId}}&eligibleAge=30",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10296,9 +9864,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"airlineId\": {{airlineId}},\n  \"code\": \"INS{{run6}}\",\n  \"name\": \"Travel cover\",\n  \"description\": \"Medical and trip cover\",\n  \"provider\": \"Forte Insurance\",\n  \"coverageType\": \"TRAVEL\",\n  \"coverageAmount\": 10000.0,\n  \"premium\": 12.0,\n  \"currency\": \"USD\",\n  \"minAge\": 0,\n  \"maxAge\": 80,\n  \"termsUrl\": \"https://example.com/terms\",\n  \"isActive\": true\n}",
@@ -10350,9 +9916,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}/status?active=true"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}/status?active=true",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10395,9 +9959,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/insurance-coverages/{{insuranceId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10446,9 +10008,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/meals/{{mealId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10491,9 +10051,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}"
-                    },
+                    "url": "{{ancillaryUrl}}/api/v1/ancillaries/{{ancillaryId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10540,9 +10098,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10570,9 +10126,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=2&children=1&infants=1&cabin=ECONOMY&sort=PRICE"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=2&children=1&infants=1&cabin=ECONOMY&sort=PRICE",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10600,9 +10154,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=1&infants=2"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/flight-search?from={{pnhAirportId}}&to={{nrtAirportId}}&date={{flightDay}}&adults=1&infants=2",
                     "auth": {
                       "type": "noauth"
                     },
@@ -10644,9 +10196,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings?page=1&size=10"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings?page=1&size=10",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10689,9 +10239,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings?status=CONFIRMED&page=1&size=10"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings?status=CONFIRMED&page=1&size=10",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10734,9 +10282,7 @@
                         "value": "ROLE_AIRLINE_OWNER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings?page=1&size=10"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings?page=1&size=10",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10779,9 +10325,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10824,9 +10368,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/reference/{{bookingReference}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/reference/{{bookingReference}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10869,9 +10411,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/history"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/history",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -10924,9 +10464,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/draft"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/draft",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"tripType\": \"ONE_WAY\",\n  \"currency\": \"USD\",\n  \"flexibleTicket\": false,\n  \"contactInfo\": {\n    \"email\": \"{{customerEmail}}\",\n    \"phone\": \"+85512345678\"\n  }\n}",
@@ -10984,9 +10522,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Bopha\",\n  \"lastName\": \"Chan\",\n  \"dateOfBirth\": \"05/05/1985\",\n  \"gender\": \"FEMALE\",\n  \"passportNumber\": \"N09990001\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -11044,9 +10580,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Rith\",\n  \"lastName\": \"Chan\",\n  \"dateOfBirth\": \"06/06/1986\",\n  \"gender\": \"MALE\",\n  \"passportNumber\": \"N09990002\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -11100,9 +10634,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11145,9 +10677,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassengerId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassengerId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11194,9 +10724,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassengerId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassengerId}}",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Bopha\",\n  \"lastName\": \"Chan\",\n  \"dateOfBirth\": \"05/05/1985\",\n  \"gender\": \"FEMALE\",\n  \"passportNumber\": \"N09990001\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\",\n  \"email\": \"bopha@example.com\"\n}",
@@ -11248,9 +10776,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassenger2Id}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passengers/{{tmpPassenger2Id}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11297,9 +10823,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}},\n  \"fareId\": {{flexFareId}}\n}",
@@ -11354,9 +10878,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11399,9 +10921,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments/{{tmpSegmentId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments/{{tmpSegmentId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11444,9 +10964,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11493,9 +11011,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}/seat"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}/seat",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"seatInstanceId\": {{seat5A}}\n}",
@@ -11547,9 +11063,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}/seat"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/passenger-segments/{{tmpPassengerSegmentId}}/seat",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11592,9 +11106,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments/{{tmpSegmentId}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/segments/{{tmpSegmentId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11637,9 +11149,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/cancel"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBookingId}}/cancel",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11686,9 +11196,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/draft"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/draft",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"tripType\": \"ONE_WAY\",\n  \"currency\": \"USD\",\n  \"flexibleTicket\": false,\n  \"contactInfo\": {\n    \"email\": \"{{customerEmail}}\",\n    \"phone\": \"+85512345678\"\n  }\n}",
@@ -11746,9 +11254,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{tmpBooking2Id}}/status"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{tmpBooking2Id}}/status",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"status\": \"CANCELLED\",\n  \"reason\": \"Test from Postman\"\n}",
@@ -11806,9 +11312,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11851,9 +11355,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/tickets/{{ticketId1}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/tickets/{{ticketId1}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11896,9 +11398,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/tickets/number/{{ticketNumber1}}"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/tickets/number/{{ticketNumber1}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11941,9 +11441,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/tickets",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -11986,9 +11484,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/tickets/{{ticketId1}}/use"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/tickets/{{ticketId1}}/use",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12031,9 +11527,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/tickets/{{ticketId2}}/void"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/tickets/{{ticketId2}}/void",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12076,9 +11570,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/tickets/{{ticketId3}}/refund"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/tickets/{{ticketId3}}/refund",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12119,9 +11611,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingDirect}}/internal/v1/bookings/{{bookingId}}/payment-info"
-                    },
+                    "url": "{{bookingDirect}}/internal/v1/bookings/{{bookingId}}/payment-info",
                     "auth": {
                       "type": "noauth"
                     },
@@ -12153,9 +11643,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingDirect}}/internal/v1/flight-instances/{{tmpInstanceId}}/cancelled"
-                    },
+                    "url": "{{bookingDirect}}/internal/v1/flight-instances/{{tmpInstanceId}}/cancelled",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightNumber\": \"{{flightNumber}}\",\n  \"reason\": \"Postman test\"\n}",
@@ -12216,9 +11704,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/draft"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/draft",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"tripType\": \"ONE_WAY\",\n  \"currency\": \"USD\",\n  \"flexibleTicket\": false,\n  \"contactInfo\": {\n    \"email\": \"{{customerEmail}}\",\n    \"phone\": \"+85512345678\"\n  }\n}",
@@ -12276,9 +11762,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{payBookingId}}/passengers"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{payBookingId}}/passengers",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"passengerType\": \"ADULT\",\n  \"firstName\": \"Kosal\",\n  \"lastName\": \"Lim\",\n  \"dateOfBirth\": \"07/07/1987\",\n  \"gender\": \"MALE\",\n  \"passportNumber\": \"N09990003\",\n  \"passportExpiry\": \"01/01/2035\",\n  \"passportIssuingCountry\": \"KH\",\n  \"nationality\": \"KH\"\n}",
@@ -12334,9 +11818,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{bookingUrl}}/api/v1/bookings/{{payBookingId}}/segments"
-                    },
+                    "url": "{{bookingUrl}}/api/v1/bookings/{{payBookingId}}/segments",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"flightInstanceId\": {{flightInstanceId}},\n  \"fareId\": {{saverFareId}}\n}",
@@ -12392,9 +11874,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"bookingId\": {{payBookingId}},\n  \"method\": \"ABA_PAYWAY\",\n  \"firstName\": \"Kosal\",\n  \"lastName\": \"Lim\",\n  \"email\": \"{{customerEmail}}\"\n}",
@@ -12448,9 +11928,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/{{tmpPaymentId}}"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/{{tmpPaymentId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12493,9 +11971,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/booking/{{payBookingId}}"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/booking/{{payBookingId}}",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12538,9 +12014,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/{{tmpPaymentId}}/cancel"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/{{tmpPaymentId}}/cancel",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12587,9 +12061,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"bookingId\": {{payBookingId}},\n  \"method\": \"ABA_PAYWAY_QR\",\n  \"firstName\": \"Kosal\",\n  \"lastName\": \"Lim\",\n  \"email\": \"{{customerEmail}}\"\n}",
@@ -12643,9 +12115,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/sync"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/sync",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12692,9 +12162,7 @@
                         "value": "ROLE_SYSTEM_ADMIN"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/refunds"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/refunds",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"amount\": 10.0,\n  \"reason\": \"Goodwill\"\n}",
@@ -12746,9 +12214,7 @@
                         "value": "ROLE_CUSTOMER"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/refunds"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/{{paymentId}}/refunds",
                     "auth": {
                       "type": "bearer",
                       "bearer": [
@@ -12787,9 +12253,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentUrl}}/api/v1/payments/aba/callback"
-                    },
+                    "url": "{{paymentUrl}}/api/v1/payments/aba/callback",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"tran_id\": \"PUT-A-TRAN-ID-HERE\",\n  \"status\": 0,\n  \"apv\": \"123456\"\n}",
@@ -12836,9 +12300,7 @@
                         "value": "application/json"
                       }
                     ],
-                    "url": {
-                      "raw": "{{paymentDirect}}/internal/v1/payments/refunds"
-                    },
+                    "url": "{{paymentDirect}}/internal/v1/payments/refunds",
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"bookingId\": {{payBookingId}},\n  \"reason\": \"Postman test\"\n}",
@@ -12885,9 +12347,7 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{eurekaUrl}}/eureka/apps"
-            },
+            "url": "{{eurekaUrl}}/eureka/apps",
             "auth": {
               "type": "noauth"
             },
@@ -12918,9 +12378,7 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{gatewayUrl}}/actuator/health"
-            },
+            "url": "{{gatewayUrl}}/actuator/health",
             "auth": {
               "type": "noauth"
             },
@@ -12948,9 +12406,7 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{gatewayUrl}}/api/v1/bookings"
-            },
+            "url": "{{gatewayUrl}}/api/v1/bookings",
             "auth": {
               "type": "noauth"
             },
@@ -12986,9 +12442,7 @@
                 "value": "ROLE_SYSTEM_ADMIN"
               }
             ],
-            "url": {
-              "raw": "{{gatewayUrl}}/api/v1/bookings"
-            },
+            "url": "{{gatewayUrl}}/api/v1/bookings",
             "auth": {
               "type": "noauth"
             },
@@ -13016,9 +12470,7 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{gatewayUrl}}/api/v1/bookings"
-            },
+            "url": "{{gatewayUrl}}/api/v1/bookings",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -13057,9 +12509,7 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{gatewayUrl}}/internal/v1/bookings/1/payment-result"
-            },
+            "url": "{{gatewayUrl}}/internal/v1/bookings/1/payment-result",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"paymentId\": 1,\n  \"status\": \"SUCCESS\"\n}",
@@ -13110,9 +12560,7 @@
                 "value": "ROLE_AIRLINE_OWNER"
               }
             ],
-            "url": {
-              "raw": "{{flightOpsUrl}}/api/v1/flight-instances/{{flightInstanceId}}/status?status=CANCELLED&reason=Typhoon%20warning"
-            },
+            "url": "{{flightOpsUrl}}/api/v1/flight-instances/{{flightInstanceId}}/status?status=CANCELLED&reason=Typhoon%20warning",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -13155,9 +12603,7 @@
                 "value": "ROLE_CUSTOMER"
               }
             ],
-            "url": {
-              "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}"
-            },
+            "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -13201,9 +12647,7 @@
                 "value": "ROLE_CUSTOMER"
               }
             ],
-            "url": {
-              "raw": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/history"
-            },
+            "url": "{{bookingUrl}}/api/v1/bookings/{{bookingId}}/history",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -13248,9 +12692,7 @@
                 "value": "ROLE_AIRLINE_OWNER"
               }
             ],
-            "url": {
-              "raw": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}"
-            },
+            "url": "{{airlineCoreUrl}}/api/v1/airlines/{{airlineId}}",
             "auth": {
               "type": "bearer",
               "bearer": [
