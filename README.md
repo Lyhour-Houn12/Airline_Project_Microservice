@@ -67,6 +67,20 @@ Tests: `mvn test -Dtest='*Test' -Dsurefire.failIfNoSpecifiedTests=false` (unit t
 `*ApplicationTests` need the databases and secrets). CI (`.github/workflows/ci.yml`) runs the same
 on every push and pull request, and builds every Docker image with Jib.
 
+## Postman
+
+`postman/Airline.postman_collection.json` has every API of every service (194 endpoints, 279 requests),
+with tests on each response. Import it with one of the environments:
+
+- `postman/Airline-gateway.postman_environment.json`: everything through the gateway (http://localhost:8080), for Docker
+- `postman/Airline-direct.postman_environment.json`: each service on its own port, when they run locally
+
+Fill in `adminEmail` / `adminPassword`, then run **A. Full flow** first (it creates the data the other
+folders use), then **B. All APIs by service**, **C. Gateway, Eureka and security checks**, and
+**D. Clean-up** last. The collection's description lists the manual steps (sign-up codes, the simulated
+ABA payment). Also runnable from the terminal with Newman:
+`npx newman run postman/Airline.postman_collection.json -e postman/Airline-gateway.postman_environment.json`.
+
 ## Database changes (Flyway)
 
 Each service's schema is owned by its migrations in `src/main/resources/db/migration`; Hibernate
